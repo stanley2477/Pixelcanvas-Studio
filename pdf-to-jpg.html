@@ -119,21 +119,24 @@ document.getElementById("removeBtn").addEventListener("click",()=>{file=null;pdf
 document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
 document.getElementById("convertBtn").addEventListener("click",async()=>{if(!pdfDoc){setStatus("Please upload a PDF first.");return}const nums=selectedPages();if(!nums.length){setStatus("Please select at least one valid PDF page.");return}converted=[];resultGrid.innerHTML="";results.classList.add("show");downloadAllBtn.disabled=true;const q=Number(quality.value)/100;try{for(let n=0;n<nums.length;n++){const pageNo=nums[n];setStatus(`Converting page ${n+1} of ${nums.length}…`);const canvas=await renderPage(pageNo,2);const blob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",q));if(!blob)throw new Error("JPG creation failed");const name=(file.name.replace(/\.pdf$/i,"")||"document")+`-page-${pageNo}.jpg`;converted.push({page:pageNo,blob,name});const card=document.createElement("div");card.className="result";const img=document.createElement("img");img.className="result-preview";img.src=URL.createObjectURL(blob);img.alt=`Converted page ${pageNo}`;img.style.width="100%";img.style.height="auto";img.style.display="block";const title=document.createElement("strong");title.textContent=`Page ${pageNo}`;const info=document.createElement("small");info.textContent=bytes(blob.size);const dl=document.createElement("button");dl.className="small-btn";dl.type="button";dl.textContent="📥 Download JPG";dl.addEventListener("click",()=>{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});card.append(img,title,info,dl);resultGrid.appendChild(card)}downloadAllBtn.disabled=false;setStatus(`${converted.length} JPG${converted.length===1?"":"s"} ready to download.`)}catch(e){setStatus("Conversion failed. Please try another PDF.")}});
 downloadAllBtn.addEventListener("click",async()=>{
- if(!convertedImages.length)return;
+ if(!converted.length)return;
  downloadAllBtn.disabled=true;
- status.textContent="Preparing JPG downloads…";
- for(let i=0;i<convertedImages.length;i++){
-  const item=convertedImages[i];
+ setStatus("Preparing JPG downloads…");
+ for(let i=0;i<converted.length;i++){
+  const item=converted[i];
+  const url=URL.createObjectURL(item.blob);
   const a=document.createElement("a");
-  a.href=item.url;
+  a.href=url;
   a.download=item.name;
+  a.style.display="none";
   document.body.appendChild(a);
   a.click();
   a.remove();
-  await new Promise(resolve=>setTimeout(resolve,600));
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+  await new Promise(resolve=>setTimeout(resolve,700));
  }
  downloadAllBtn.disabled=false;
- status.textContent=convertedImages.length+" JPG file"+(convertedImages.length===1?"":"s")+" downloaded.";
+ setStatus(`${converted.length} JPG${converted.length===1?"":"s"} downloaded individually.`);
 });
 
 document.getElementById("year").textContent=new Date().getFullYear();
