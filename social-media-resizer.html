@@ -87,6 +87,14 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 </div>
 
 <div class="setting">
+<label for="outputFormat">Output format</label>
+<select id="outputFormat">
+<option value="image/png" selected>PNG</option>
+<option value="image/jpeg">JPG</option>
+</select>
+</div>
+
+<div class="setting">
 <label for="background">Fit background color</label>
 <input id="background" type="color" value="#ffffff" style="height:42px;padding:3px;cursor:pointer">
 </div>
@@ -128,7 +136,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 <footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
 
 <script>
-const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),results=document.getElementById("results"),status=document.getElementById("status"),preset=document.getElementById("preset"),customSetting=document.getElementById("customSetting"),fit=document.getElementById("fit"),background=document.getElementById("background"),resultPreview=document.getElementById("resultPreview"),downloadBtn=document.getElementById("downloadBtn");
+const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),results=document.getElementById("results"),status=document.getElementById("status"),preset=document.getElementById("preset"),customSetting=document.getElementById("customSetting"),fit=document.getElementById("fit"),background=document.getElementById("background"),outputFormat=document.getElementById("outputFormat"),resultPreview=document.getElementById("resultPreview"),downloadBtn=document.getElementById("downloadBtn");
 let file=null,url=null,resultBlob=null,resultUrl=null;
 const presets={ "instagram-square":[1080,1080],"instagram-portrait":[1080,1350],"instagram-landscape":[1080,566],tiktok:[1080,1920],linkedin:[1200,627],facebook:[1200,630],youtube:[1280,720]};
 function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
@@ -138,17 +146,43 @@ preset.addEventListener("change",()=>{customSetting.style.display=preset.value==
 document.getElementById("removeBtn").addEventListener("click",()=>{file=null;fileInput.value="";controls.classList.remove("show");results.classList.remove("show");status.textContent="";if(url)URL.revokeObjectURL(url);if(resultUrl)URL.revokeObjectURL(resultUrl);url=null;resultUrl=null;resultBlob=null});
 document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
 function getDims(){if(preset.value==="custom")return[Math.max(1,Number(document.getElementById("width").value)),Math.max(1,Number(document.getElementById("height").value))];return presets[preset.value]}
-document.getElementById("resizeBtn").addEventListener("click",()=>{if(!file)return;const[w,h]=getDims();status.textContent="Resizing image…";const img=new Image();img.onload=()=>{const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");if(fit.value==="contain"){x.fillStyle=background.value;x.fillRect(0,0,w,h);const s=Math.min(w/img.naturalWidth,h/img.naturalHeight),dw=img.naturalWidth*s,dh=img.naturalHeight*s;x.drawImage(img,(w-dw)/2,(h-dh)/2,dw,dh)}else if(fit.value==="stretch"){x.drawImage(img,0,0,w,h)}else{const s=Math.max(w/img.naturalWidth,h/img.naturalHeight),dw=img.naturalWidth*s,dh=img.naturalHeight*s;x.drawImage(img,(w-dw)/2,(h-dh)/2,dw,dh)}c.toBlob(blob=>{if(!blob){status.textContent="Could not create the resized image.";return}resultBlob=blob;if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);resultPreview.src=resultUrl;document.getElementById("dimensions").textContent=w+" × "+h;document.getElementById("format").textContent="JPG";document.getElementById("size").textContent=bytes(blob.size);results.classList.add("show");downloadBtn.disabled=false;status.textContent="Resize complete."},"image/jpeg",.94)};img.src=url});
+document.getElementById("resizeBtn").addEventListener("click",()=>{if(!file)return;const[w,h]=getDims();status.textContent="Resizing image…";const img=new Image();img.onload=()=>{const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");if(fit.value==="contain"){x.fillStyle=background.value;x.fillRect(0,0,w,h);const s=Math.min(w/img.naturalWidth,h/img.naturalHeight),dw=img.naturalWidth*s,dh=img.naturalHeight*s;x.drawImage(img,(w-dw)/2,(h-dh)/2,dw,dh)}else if(fit.value==="stretch"){x.drawImage(img,0,0,w,h)}else{const s=Math.max(w/img.naturalWidth,h/img.naturalHeight),dw=img.naturalWidth*s,dh=img.naturalHeight*s;x.drawImage(img,(w-dw)/2,(h-dh)/2,dw,dh)}c.toBlob(blob=>{
+ if(!blob){
+  status.textContent="Could not create the resized image.";
+  return;
+ }
+
+ resultBlob=blob;
+
+ if(resultUrl)URL.revokeObjectURL(resultUrl);
+
+ resultUrl=URL.createObjectURL(blob);
+ resultPreview.src=resultUrl;
+
+ document.getElementById("dimensions").textContent=w+" × "+h;
+
+ document.getElementById("format").textContent=
+  outputFormat.value==="image/png"?"PNG":"JPG";
+
+ document.getElementById("size").textContent=bytes(blob.size);
+
+ results.classList.add("show");
+ downloadBtn.disabled=false;
+ status.textContent="Resize complete.";
+
+},outputFormat.value,outputFormat.value==="image/jpeg"?.94:undefined)};img.src=url});
 downloadBtn.addEventListener("click",async()=>{
  if(!resultBlob)return;
 
- const fileName="social-media-image.jpg";
+const ext=outputFormat.value==="image/png"?"png":"jpg";
+const mime=outputFormat.value;
+const fileName="social-media-image."+ext;
 
- const photoFile=new File(
-  [resultBlob],
-  fileName,
-  {type:"image/jpeg"}
- );
+const photoFile=new File(
+ [resultBlob],
+ fileName,
+ {type:mime}
+);
 
  if(
   navigator.share &&
