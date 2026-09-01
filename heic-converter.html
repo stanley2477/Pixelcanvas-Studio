@@ -107,7 +107,19 @@ let files=[],converted=[];
 function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
 function setStatus(t){status.textContent=t}
 function renderFiles(){fileList.innerHTML="";files.forEach((f,i)=>{const d=document.createElement("div");d.className="file-row";d.innerHTML='<div><div class="file-name"></div><div class="file-info"></div></div><button class="remove-file" data-i="'+i+'" aria-label="Remove file">×</button>';d.querySelector('.file-name').textContent=f.name;d.querySelector('.file-info').textContent=bytes(f.size);fileList.appendChild(d)});controls.classList.toggle("show",files.length>0)}
-function addFiles(list){const valid=Array.from(list).filter(f=>/\.heic$|\.heif$/i.test(f.name)||f.type==="image/heic"||f.type==="image/heif");if(!valid.length){setStatus("Please choose HEIC or HEIF files.");return}files=[...files,...valid];renderFiles();results.classList.remove("show");setStatus(files.length+" file"+(files.length===1?"":"s")+" ready.")}
+function addFiles(list){const valid=Array.from(list).filter(f=>{
+ const name=f.name.toLowerCase();
+ const type=(f.type||"").toLowerCase();
+
+ return (
+  name.endsWith(".heic") ||
+  name.endsWith(".heif") ||
+  type==="image/heic" ||
+  type==="image/heif" ||
+  type==="image/heic-sequence" ||
+  type==="image/heif-sequence"
+ );
+});if(!valid.length){setStatus("Please choose HEIC or HEIF files.");return}files=[...files,...valid];renderFiles();results.classList.remove("show");setStatus(files.length+" file"+(files.length===1?"":"s")+" ready.")}
 fileInput.addEventListener("change",e=>{addFiles(e.target.files);fileInput.value=""});
 dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");addFiles(e.dataTransfer.files)});
 fileList.addEventListener("click",e=>{if(e.target.classList.contains("remove-file")){files.splice(Number(e.target.dataset.i),1);renderFiles()}});

@@ -355,16 +355,25 @@ async function createPDF(){
     doc.addPage([pageW,pageH],orientation);
    }
 
-   doc.addImage(
-    img,
-    "PNG",
-    x,
-    y,
-    imgW,
-    imgH,
-    undefined,
-    "FAST"
-   );
+const canvas=document.createElement("canvas");
+canvas.width=img.naturalWidth;
+canvas.height=img.naturalHeight;
+
+const ctx=canvas.getContext("2d");
+ctx.drawImage(img,0,0);
+
+const pngData=canvas.toDataURL("image/png");
+
+doc.addImage(
+ pngData,
+ "PNG",
+ x,
+ y,
+ imgW,
+ imgH,
+ undefined,
+ "FAST"
+);
   }
 
   /*
