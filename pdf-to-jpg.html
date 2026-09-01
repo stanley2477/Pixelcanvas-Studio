@@ -66,7 +66,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 <div class="status" id="status" aria-live="polite"></div>
 </div>
 
-<div class="results" id="results"><div class="result-grid" id="resultGrid"></div><button class="btn primary" id="downloadAllBtn" disabled style="width:100%;margin-top:12px">📥 Download All JPGs</button></div>
+<div class="results" id="results"><div class="result-grid" id="resultGrid"></div></div>
 </section>
 
 <section class="info">
@@ -100,7 +100,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
 pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
 
-const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),status=document.getElementById("status"),results=document.getElementById("results"),resultGrid=document.getElementById("resultGrid"),downloadAllBtn=document.getElementById("downloadAllBtn"),pages=document.getElementById("pages"),selectionSetting=document.getElementById("selectionSetting"),rangeSetting=document.getElementById("rangeSetting"),pageInput=document.getElementById("pageInput"),rangeInput=document.getElementById("rangeInput"),quality=document.getElementById("quality");
+const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),status=document.getElementById("status"),results=document.getElementById("results"),resultGrid=document.getElementById("resultGrid"),pages=document.getElementById("pages"),selectionSetting=document.getElementById("selectionSetting"),rangeSetting=document.getElementById("rangeSetting"),pageInput=document.getElementById("pageInput"),rangeInput=document.getElementById("rangeInput"),quality=document.getElementById("quality");
 let file=null,pdfDoc=null,converted=[];
 function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
 function setStatus(t){status.textContent=t}
@@ -110,35 +110,14 @@ function parseRange(){const m=rangeInput.value.trim().match(/^(\d+)\s*-\s*(\d+)$
 function selectedPages(){if(!pdfDoc)return[];if(pages.value==="selected")return parseSelected();if(pages.value==="range")return parseRange();return Array.from({length:pdfDoc.numPages},(_,i)=>i+1)}
 async function renderPage(pageNumber,scale=1){const page=await pdfDoc.getPage(pageNumber);const viewport=page.getViewport({scale});const canvas=document.createElement("canvas");canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);await page.render({canvasContext:canvas.getContext("2d",{alpha:false}),viewport,background:"white"}).promise;return canvas}
 async function showPreview(){if(!pdfDoc)return;const count=Math.min(pdfDoc.numPages,20);const preview=document.createElement("div");preview.className="page-actions";preview.style.display="grid";preview.style.gridTemplateColumns="repeat(auto-fill,minmax(90px,1fr))";preview.style.gap="8px";preview.style.marginTop="12px";preview.innerHTML="";for(let i=1;i<=count;i++){const b=document.createElement("button");b.type="button";b.className="small-btn";b.textContent="Page "+i;b.dataset.pages=i;b.addEventListener("click",()=>{pageInput.value=pageInput.value?uniqueSorted([...parseSelected(),i]).join(", "):String(i);pages.value="selected";selectionSetting.style.display="block";rangeSetting.style.display="none"});preview.appendChild(b)}selectionSetting.appendChild(preview)}
-async function load(f){if(!f)return;if(f.type!=="application/pdf"&&!/\.pdf$/i.test(f.name)){setStatus("Please choose a PDF file.");return}try{file=f;document.getElementById("fileName").textContent=f.name;document.getElementById("fileInfo").textContent=bytes(f.size);controls.classList.add("show");results.classList.remove("show");downloadAllBtn.disabled=true;converted=[];setStatus("Loading PDF…");pdfDoc=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;setStatus(`PDF loaded: ${pdfDoc.numPages} page${pdfDoc.numPages===1?"":"s"}. Choose pages and JPG quality.`);const old=selectionSetting.querySelector(".page-actions");if(old)old.remove();await showPreview()}catch(e){pdfDoc=null;setStatus("Could not read this PDF. Please try another PDF file.")}}
+async function load(f){if(!f)return;if(f.type!=="application/pdf"&&!/\.pdf$/i.test(f.name)){setStatus("Please choose a PDF file.");return}try{file=f;document.getElementById("fileName").textContent=f.name;document.getElementById("fileInfo").textContent=bytes(f.size);controls.classList.add("show");results.classList.remove("show");converted=[];setStatus("Loading PDF…");pdfDoc=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;setStatus(`PDF loaded: ${pdfDoc.numPages} page${pdfDoc.numPages===1?"":"s"}. Choose pages and JPG quality.`);const old=selectionSetting.querySelector(".page-actions");if(old)old.remove();await showPreview()}catch(e){pdfDoc=null;setStatus("Could not read this PDF. Please try another PDF file.")}}
 fileInput.addEventListener("change",e=>load(e.target.files[0]));dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");load(e.dataTransfer.files[0])});
 pages.addEventListener("change",()=>{selectionSetting.style.display=pages.value==="selected"?"block":"none";rangeSetting.style.display=pages.value==="range"?"block":"none"});
 document.querySelectorAll("[data-pages]").forEach(b=>b.addEventListener("click",()=>{pageInput.value=pageInput.value?uniqueSorted([...parseSelected(),+b.dataset.pages]).join(", "):b.dataset.pages}));
 quality.addEventListener("input",e=>{document.getElementById("qualityValue").textContent=e.target.value+"%";document.getElementById("q2").textContent=e.target.value+"%"});
-document.getElementById("removeBtn").addEventListener("click",()=>{file=null;pdfDoc=null;converted=[];fileInput.value="";pageInput.value="";rangeInput.value="";controls.classList.remove("show");results.classList.remove("show");resultGrid.innerHTML="";downloadAllBtn.disabled=true;setStatus("")});
+document.getElementById("removeBtn").addEventListener("click",()=>{file=null;pdfDoc=null;converted=[];fileInput.value="";pageInput.value="";rangeInput.value="";controls.classList.remove("show");results.classList.remove("show");resultGrid.innerHTML="";setStatus("")});
 document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
-document.getElementById("convertBtn").addEventListener("click",async()=>{if(!pdfDoc){setStatus("Please upload a PDF first.");return}const nums=selectedPages();if(!nums.length){setStatus("Please select at least one valid PDF page.");return}converted=[];resultGrid.innerHTML="";results.classList.add("show");downloadAllBtn.disabled=true;const q=Number(quality.value)/100;try{for(let n=0;n<nums.length;n++){const pageNo=nums[n];setStatus(`Converting page ${n+1} of ${nums.length}…`);const canvas=await renderPage(pageNo,2);const blob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",q));if(!blob)throw new Error("JPG creation failed");const name=(file.name.replace(/\.pdf$/i,"")||"document")+`-page-${pageNo}.jpg`;converted.push({page:pageNo,blob,name});const card=document.createElement("div");card.className="result";const img=document.createElement("img");img.className="result-preview";img.src=URL.createObjectURL(blob);img.alt=`Converted page ${pageNo}`;img.style.width="100%";img.style.height="auto";img.style.display="block";const title=document.createElement("strong");title.textContent=`Page ${pageNo}`;const info=document.createElement("small");info.textContent=bytes(blob.size);const dl=document.createElement("button");dl.className="small-btn";dl.type="button";dl.textContent="📥 Download JPG";dl.addEventListener("click",()=>{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});card.append(img,title,info,dl);resultGrid.appendChild(card)}downloadAllBtn.disabled=false;setStatus(`${converted.length} JPG${converted.length===1?"":"s"} ready to download.`)}catch(e){setStatus("Conversion failed. Please try another PDF.")}});
-downloadAllBtn.addEventListener("click",async()=>{
- if(!converted.length)return;
- downloadAllBtn.disabled=true;
- setStatus("Preparing JPG downloads…");
- for(let i=0;i<converted.length;i++){
-  const item=converted[i];
-  const url=URL.createObjectURL(item.blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download=item.name;
-  a.style.display="none";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),3000);
-  await new Promise(resolve=>setTimeout(resolve,700));
- }
- downloadAllBtn.disabled=false;
- setStatus(`${converted.length} JPG${converted.length===1?"":"s"} downloaded individually.`);
-});
-
+document.getElementById("convertBtn").addEventListener("click",async()=>{if(!pdfDoc){setStatus("Please upload a PDF first.");return}const nums=selectedPages();if(!nums.length){setStatus("Please select at least one valid PDF page.");return}converted=[];resultGrid.innerHTML="";results.classList.add("show");const q=Number(quality.value)/100;try{for(let n=0;n<nums.length;n++){const pageNo=nums[n];setStatus(`Converting page ${n+1} of ${nums.length}…`);const canvas=await renderPage(pageNo,2);const blob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",q));if(!blob)throw new Error("JPG creation failed");const name=(file.name.replace(/\.pdf$/i,"")||"document")+`-page-${pageNo}.jpg`;converted.push({page:pageNo,blob,name});const card=document.createElement("div");card.className="result";const img=document.createElement("img");img.className="result-preview";img.src=URL.createObjectURL(blob);img.alt=`Converted page ${pageNo}`;img.style.width="100%";img.style.height="auto";img.style.display="block";const title=document.createElement("strong");title.textContent=`Page ${pageNo}`;const info=document.createElement("small");info.textContent=bytes(blob.size);const dl=document.createElement("button");dl.className="small-btn";dl.type="button";dl.textContent="📥 Download JPG";dl.addEventListener("click",()=>{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});card.append(img,title,info,dl);resultGrid.appendChild(card)}downloadAllBtn.disabled=false;setStatus(`${converted.length} JPG${converted.length===1?"":"s"} ready to download.`)}catch(e){setStatus("Conversion failed. Please try another PDF.")}});
 document.getElementById("year").textContent=new Date().getFullYear();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
 </script>
