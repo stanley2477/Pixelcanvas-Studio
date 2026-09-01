@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/pdf-compressor.html">
+<meta name="description" content="Compress PDF files online with PixelCanvas Studio. Upload a PDF, choose a compression level, compare file sizes, view progress and download the compressed PDF.">
+<title>PDF Compressor | Reduce PDF File Size Online | PixelCanvas Studio</title>
+<style>
+:root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.1),transparent 32rem),var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}
+.container{width:min(1000px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:9px;font-weight:800}.logo{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.navlinks{display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:700}.navlinks a:hover{color:#fff}
+main{padding:38px 0 60px}.breadcrumb{color:var(--muted);font-size:12px;margin-bottom:18px}.breadcrumb a{color:var(--blue2)}
+.hero h1{font-size:clamp(30px,6vw,48px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:10px}.hero>p{max-width:760px;color:var(--muted);font-size:14px;margin-bottom:25px}
+.toolbox{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.dropzone{display:block;border:1.5px dashed #3a4a61;border-radius:17px;padding:38px 18px;text-align:center;background:rgba(255,255,255,.015);cursor:pointer}.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:rgba(59,130,246,.06)}
+.dropzone input{display:none}.upload-icon{font-size:34px;margin-bottom:8px}.dropzone h2{font-size:18px;margin-bottom:4px}.dropzone p{font-size:12px;color:var(--muted)}
+.controls{display:none;margin-top:18px}.controls.show{display:block}
+.file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border:1px solid var(--border);border-radius:12px;background:#0d131d}.file-name{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-info{font-size:11px;color:var(--muted)}.remove{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:18px}
+.setting{margin-top:18px}.setting label{display:block;font-size:13px;font-weight:700;margin-bottom:9px}
+select{width:100%;padding:11px 12px;background:#0d131d;color:#fff;border:1px solid var(--border);border-radius:10px;outline:none}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.level{border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:11px;padding:13px;cursor:pointer;text-align:left}.level.active{border-color:var(--blue);background:rgba(59,130,246,.1)}.level strong{display:block;font-size:12px}.level span{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:750;font-size:13px}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}
+.status{margin-top:14px;color:var(--muted);font-size:12px;min-height:18px}.progress{display:none;margin-top:15px}.progress.show{display:block}.bar{height:8px;background:#0d131d;border:1px solid var(--border);border-radius:999px;overflow:hidden}.fill{height:100%;width:0%;background:var(--blue);transition:width .25s}.progress-label{font-size:11px;color:var(--muted);margin-top:6px}
+.results{display:none;margin-top:20px}.results.show{display:block}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:14px;background:#0d131d;border:1px solid var(--border);border-radius:12px;text-align:center}.stat strong{display:block;font-size:17px}.stat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}.result-note{margin-top:12px;padding:13px;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:11px}
+.download{width:100%;margin-top:12px}
+.info{margin-top:34px}.info h2{font-size:24px;letter-spacing:-.5px;margin-bottom:9px}.info h3{font-size:17px;margin:22px 0 7px}.info p,.info li{color:var(--muted);font-size:13px}.info ol{padding-left:20px;margin-top:8px}.info li{margin:5px 0}.tip{margin-top:18px;padding:15px;border:1px solid var(--border);border-radius:14px;background:rgba(59,130,246,.06)}
+.related{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.related a{padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;font-weight:700}.related a:hover{border-color:var(--blue)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}.footerlinks a:hover{color:#fff}
+@media(max-width:650px){.navlinks a:nth-child(2){display:none}.toolbox{padding:14px}.levels,.stats{grid-template-columns:1fr}.related{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="/"><span class="logo">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="navlinks"><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="/">Home</a></nav>
+</div></header>
+
+<main><div class="container">
+<div class="breadcrumb"><a href="/">Home</a> / <a href="all-tools.html">PDF & Document Tools</a> / PDF Compressor</div>
+<section class="hero"><h1>PDF Compressor</h1><p>Reduce PDF file size online. Upload a PDF, choose a compression level, process it, compare the original and compressed sizes, and download the result.</p></section>
+
+<section class="toolbox">
+<label class="dropzone" id="dropzone"><input id="fileInput" type="file" accept="application/pdf,.pdf"><div class="upload-icon">🗜️</div><h2>Upload a PDF</h2><p>Choose a PDF file, or drag and drop it here.</p></label>
+
+<div class="controls" id="controls">
+<div class="file-row"><div><div class="file-name" id="fileName">—</div><div class="file-info" id="fileInfo">—</div></div><button class="remove" id="removeBtn" aria-label="Remove PDF">×</button></div>
+
+<div class="setting"><label>Compression level</label><div class="levels">
+<button class="level active" data-level="balanced"><strong>Balanced</strong><span>Good size and quality</span></button>
+<button class="level" data-level="strong"><strong>Strong</strong><span>Smaller file size</span></button>
+<button class="level" data-level="maximum"><strong>Maximum</strong><span>Prioritize smallest size</span></button>
+</div></div>
+
+<div class="actions"><button class="btn primary" id="compressBtn">🗜️ Compress PDF</button><button class="btn" id="anotherBtn">🔄 Choose Another</button></div>
+<div class="progress" id="progress"><div class="bar"><div class="fill" id="fill"></div></div><div class="progress-label" id="progressLabel">Preparing…</div></div>
+<div class="status" id="status" aria-live="polite"></div>
+</div>
+
+<div class="results" id="results">
+<div class="stats"><div class="stat"><strong id="originalSize">—</strong><span>Original size</span></div><div class="stat"><strong id="compressedSize">—</strong><span>Compressed size</span></div><div class="stat"><strong id="saved">—</strong><span>Estimated saved</span></div></div>
+<div class="result-note" id="resultNote">—</div>
+<button class="btn primary download" id="downloadBtn" disabled>📥 Download Compressed PDF</button>
+</div>
+</section>
+
+<section class="info">
+<h2>About PDF Compressor</h2>
+<p>PixelCanvas Studio's PDF Compressor is designed to reduce the size of PDF documents so they are easier to store, upload or share. Compression can be especially useful for PDFs containing large images or scanned pages.</p>
+
+<h3>How to compress a PDF</h3>
+<ol><li>Upload your PDF.</li><li>Choose Balanced, Strong or Maximum compression.</li><li>Select <strong>Compress PDF</strong>.</li><li>Wait for processing to finish.</li><li>Compare the original and resulting file sizes.</li><li>Download the compressed PDF if the result meets your needs.</li></ol>
+
+<h3>Choosing a compression level</h3>
+<p>Balanced compression aims to reduce file size while retaining good visual quality. Strong compression prioritizes a smaller file. Maximum compression prioritizes the smallest practical output and may reduce image quality more noticeably. The best setting depends on the document and how it will be used.</p>
+
+<h3>Why a PDF may not shrink much</h3>
+<p>Some PDFs are already highly optimized or contain mostly text and vector content. In those cases, compression may produce only a small reduction. PDFs containing large photographs or scans generally have more opportunity for size reduction.</p>
+
+<div class="tip"><strong>Tip:</strong><p>Always compare the compressed PDF with the original before sending it. Check small text, scanned pages, images and important graphics to make sure the quality remains acceptable.</p></div>
+
+<h3>Privacy and file handling</h3>
+<p>The intended production workflow can perform PDF processing in the browser with a suitable client-side PDF library. Selected files do not need to be uploaded to a server for that workflow. Review the PixelCanvas Studio Privacy Policy for the site's broader analytics, advertising and data practices.</p>
+
+<h3>Related tools</h3>
+<div class="related"><a href="pdf-merger.html">📑 PDF Merger</a><a href="pdf-splitter.html">✂️ PDF Splitter</a><a href="pdf-page-extractor.html">📄 PDF Page Extractor</a></div>
+</section>
+</div></main>
+
+<footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
+
+<script>
+const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),status=document.getElementById("status"),progress=document.getElementById("progress"),fill=document.getElementById("fill"),progressLabel=document.getElementById("progressLabel"),results=document.getElementById("results"),downloadBtn=document.getElementById("downloadBtn");
+let file=null,level="balanced",compressedBlob=null;
+function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
+function load(f){if(!f)return;if(f.type!=="application/pdf"&&!/\.pdf$/i.test(f.name)){status.textContent="Please choose a PDF file.";return}file=f;document.getElementById("fileName").textContent=f.name;document.getElementById("fileInfo").textContent=bytes(f.size);controls.classList.add("show");results.classList.remove("show");downloadBtn.disabled=true;status.textContent="PDF ready. Choose a compression level."}
+fileInput.addEventListener("change",e=>load(e.target.files[0]));dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");load(e.dataTransfer.files[0])});
+document.querySelectorAll(".level").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".level").forEach(x=>x.classList.remove("active"));b.classList.add("active");level=b.dataset.level}));
+document.getElementById("removeBtn").addEventListener("click",()=>{file=null;fileInput.value="";controls.classList.remove("show");results.classList.remove("show");progress.classList.remove("show");status.textContent="";compressedBlob=null});
+document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
+document.getElementById("compressBtn").addEventListener("click",()=>{if(!file)return;progress.classList.add("show");fill.style.width="15%";progressLabel.textContent="Preparing PDF…";status.textContent="A production PDF optimization engine is required for actual compression.";setTimeout(()=>{fill.style.width="55%";progressLabel.textContent="Optimizing document…"},350);setTimeout(()=>{fill.style.width="100%";progressLabel.textContent="Complete";document.getElementById("originalSize").textContent=bytes(file.size);document.getElementById("compressedSize").textContent="—";document.getElementById("saved").textContent="—";document.getElementById("resultNote").textContent="Compression interface complete. Connect a PDF optimization library to calculate the actual compressed size and enable the download.";results.classList.add("show");downloadBtn.disabled=true;status.textContent="Ready for the production PDF compression engine."},800)});
+downloadBtn.addEventListener("click",()=>{if(!compressedBlob)return;const u=URL.createObjectURL(compressedBlob),a=document.createElement("a");a.href=u;a.download="compressed.pdf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+document.getElementById("year").textContent=new Date().getFullYear();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/pdf-splitter.html">
+<meta name="description" content="Split PDF files online with PixelCanvas Studio. Upload a PDF, preview pages, select page ranges or individual pages, remove unwanted pages, create separate PDFs and download them.">
+<title>PDF Splitter | Split PDF Pages Online | PixelCanvas Studio</title>
+<style>
+:root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.1),transparent 32rem),var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}
+.container{width:min(1000px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:9px;font-weight:800}.logo{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.navlinks{display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:700}.navlinks a:hover{color:#fff}
+main{padding:38px 0 60px}.breadcrumb{color:var(--muted);font-size:12px;margin-bottom:18px}.breadcrumb a{color:var(--blue2)}
+.hero h1{font-size:clamp(30px,6vw,48px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:10px}.hero>p{max-width:760px;color:var(--muted);font-size:14px;margin-bottom:25px}
+.toolbox{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.dropzone{display:block;border:1.5px dashed #3a4a61;border-radius:17px;padding:38px 18px;text-align:center;background:rgba(255,255,255,.015);cursor:pointer}.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:rgba(59,130,246,.06)}
+.dropzone input{display:none}.upload-icon{font-size:34px;margin-bottom:8px}.dropzone h2{font-size:18px;margin-bottom:4px}.dropzone p{font-size:12px;color:var(--muted)}
+.controls{display:none;margin-top:18px}.controls.show{display:block}
+.file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border:1px solid var(--border);border-radius:12px;background:#0d131d}.file-name{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-info{font-size:11px;color:var(--muted)}.remove{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:18px}
+.setting{margin-top:18px}.setting label{display:block;font-size:13px;font-weight:700;margin-bottom:9px}
+select,input[type=text]{width:100%;padding:11px 12px;background:#0d131d;color:#fff;border:1px solid var(--border);border-radius:10px;outline:none}
+.page-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:10px}.page-card{border:1px solid var(--border);background:#0d131d;border-radius:10px;padding:12px;text-align:center;cursor:pointer}.page-card.selected{border-color:var(--blue);background:rgba(59,130,246,.1)}.page-card strong{display:block;font-size:12px}.page-card span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:750;font-size:13px}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}
+.status{margin-top:14px;color:var(--muted);font-size:12px;min-height:18px}
+.results{display:none;margin-top:20px}.results.show{display:block}.result{padding:14px;border:1px solid var(--border);border-radius:13px;background:#0d131d}.result strong{font-size:14px}.result p{color:var(--muted);font-size:12px;margin-top:3px}.download{width:100%;margin-top:12px}
+.info{margin-top:34px}.info h2{font-size:24px;letter-spacing:-.5px;margin-bottom:9px}.info h3{font-size:17px;margin:22px 0 7px}.info p,.info li{color:var(--muted);font-size:13px}.info ol{padding-left:20px;margin-top:8px}.info li{margin:5px 0}.tip{margin-top:18px;padding:15px;border:1px solid var(--border);border-radius:14px;background:rgba(59,130,246,.06)}
+.related{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.related a{padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;font-weight:700}.related a:hover{border-color:var(--blue)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}.footerlinks a:hover{color:#fff}
+@media(max-width:650px){.navlinks a:nth-child(2){display:none}.toolbox{padding:14px}.page-grid{grid-template-columns:repeat(3,1fr)}.related{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="/"><span class="logo">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="navlinks"><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="/">Home</a></nav>
+</div></header>
+
+<main><div class="container">
+<div class="breadcrumb"><a href="/">Home</a> / <a href="all-tools.html">PDF & Document Tools</a> / PDF Splitter</div>
+<section class="hero"><h1>PDF Splitter</h1><p>Split a PDF into separate documents. Upload a PDF, choose individual pages or page ranges, remove unwanted pages, then create and download separate PDF files.</p></section>
+
+<section class="toolbox">
+<label class="dropzone" id="dropzone"><input id="fileInput" type="file" accept="application/pdf,.pdf"><div class="upload-icon">✂️</div><h2>Upload a PDF</h2><p>Choose a PDF file, or drag and drop it here.</p></label>
+
+<div class="controls" id="controls">
+<div class="file-row"><div><div class="file-name" id="fileName">—</div><div class="file-info" id="fileInfo">—</div></div><button class="remove" id="removeBtn" aria-label="Remove PDF">×</button></div>
+
+<div class="setting"><label for="mode">Split method</label><select id="mode"><option value="individual">Split every page into a separate PDF</option><option value="selected">Split selected pages</option><option value="range">Split a page range</option></select></div>
+
+<div class="setting" id="pagesSetting"><label>Select pages</label><div class="page-grid" id="pageGrid"></div></div>
+<div class="setting" id="rangeSetting" style="display:none"><label for="rangeInput">Page range</label><input id="rangeInput" type="text" placeholder="Example: 2-6"></div>
+
+<div class="actions"><button class="btn primary" id="splitBtn">✂️ Split PDF</button><button class="btn" id="anotherBtn">🔄 Choose Another</button></div>
+<div class="status" id="status" aria-live="polite"></div>
+</div>
+
+<div class="results" id="results"><div class="result"><strong id="resultTitle">Split result</strong><p id="resultText">—</p></div><button class="btn primary download" id="downloadBtn" disabled>📥 Download Split PDFs</button></div>
+</section>
+
+<section class="info">
+<h2>About PDF Splitter</h2>
+<p>PixelCanvas Studio's PDF Splitter helps separate a PDF into smaller documents. You can split every page individually, select specific pages or work with a page range. This can be useful when only part of a document needs to be shared or saved separately.</p>
+
+<h3>How to split a PDF</h3>
+<ol><li>Upload your PDF.</li><li>Choose how you want to split the document.</li><li>Select individual pages or enter a page range when applicable.</li><li>Select <strong>Split PDF</strong>.</li><li>Review the split summary.</li><li>Download the resulting PDF files.</li></ol>
+
+<h3>Individual pages vs page ranges</h3>
+<p>Splitting every page creates separate PDF files for each page. Selecting individual pages is useful when you need only a few pages. A page range is useful when a continuous section of a document belongs together.</p>
+
+<h3>Removing unwanted pages</h3>
+<p>If you need to permanently remove pages rather than create separate files, select only the pages you want to keep and create a new PDF from those pages. Always keep the original PDF until you have confirmed that the new files contain everything you need.</p>
+
+<div class="tip"><strong>Tip:</strong><p>For large PDFs, decide the exact pages or ranges before starting. This makes the final files easier to name, organize and share.</p></div>
+
+<h3>Privacy and file handling</h3>
+<p>The intended production workflow can split PDFs directly in the browser using a client-side PDF library. Selected files do not need to be uploaded to a server for that workflow. Review the PixelCanvas Studio Privacy Policy for the site's broader analytics, advertising and data practices.</p>
+
+<h3>Related tools</h3>
+<div class="related"><a href="pdf-merger.html">📑 PDF Merger</a><a href="pdf-page-extractor.html">📄 PDF Page Extractor</a><a href="pdf-compressor.html">🗜️ PDF Compressor</a></div>
+</section>
+</div></main>
+
+<footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
+
+<script>
+const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),status=document.getElementById("status"),pageGrid=document.getElementById("pageGrid"),mode=document.getElementById("mode"),rangeSetting=document.getElementById("rangeSetting"),pagesSetting=document.getElementById("pagesSetting");
+let file=null,totalPages=0,selectedPages=new Set(),splitBlobs=[];
+function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
+function load(f){if(!f)return;if(f.type!=="application/pdf"&&!/\.pdf$/i.test(f.name)){status.textContent="Please choose a PDF file.";return}file=f;document.getElementById("fileName").textContent=f.name;document.getElementById("fileInfo").textContent=bytes(f.size);controls.classList.add("show");status.textContent="PDF selected. The page count will be available when the PDF rendering library is connected."}
+function renderPages(){pageGrid.innerHTML="";if(!totalPages){pageGrid.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:12px">PDF page thumbnails will appear after the PDF engine is connected.</div>';return}for(let i=1;i<=totalPages;i++){const d=document.createElement("div");d.className="page-card"+(selectedPages.has(i)?" selected":"");d.dataset.page=i;d.innerHTML="<strong>Page "+i+"</strong><span>Click to select</span>";pageGrid.appendChild(d)}}
+fileInput.addEventListener("change",e=>load(e.target.files[0]));dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");load(e.dataTransfer.files[0])});
+pageGrid.addEventListener("click",e=>{const d=e.target.closest(".page-card");if(!d)return;const p=Number(d.dataset.page);selectedPages.has(p)?selectedPages.delete(p):selectedPages.add(p);d.classList.toggle("selected")});
+mode.addEventListener("change",()=>{const s=mode.value==="selected";pagesSetting.style.display=s||mode.value==="individual"?"block":"none";rangeSetting.style.display=mode.value==="range"?"block":"none"});
+document.getElementById("removeBtn").addEventListener("click",()=>{file=null;fileInput.value="";controls.classList.remove("show");document.getElementById("results").classList.remove("show");status.textContent="";selectedPages.clear();totalPages=0;splitBlobs=[]});
+document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
+document.getElementById("splitBtn").addEventListener("click",()=>{if(!file)return;let message="";if(mode.value==="individual")message="Each PDF page will become its own PDF file.";else if(mode.value==="selected"){if(!selectedPages.size){status.textContent="Select at least one page.";return}message="Selected pages: "+Array.from(selectedPages).sort((a,b)=>a-b).join(", ")+". These pages will be created as separate PDF files."}else{const r=document.getElementById("rangeInput").value.trim();if(!/^\d+\s*-\s*\d+$/.test(r)){status.textContent="Enter a page range such as 2-6.";return}message="Page range "+r+" is ready to be split."}document.getElementById("resultTitle").textContent="Split setup ready";document.getElementById("resultText").textContent=message;document.getElementById("results").classList.add("show");document.getElementById("downloadBtn").disabled=true;status.textContent="Interface ready. Connect a PDF processing library for the actual split and downloads."});
+document.getElementById("year").textContent=new Date().getFullYear();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+</script>
+</body>
+</html>

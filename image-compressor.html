@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/image-compressor.html">
+
+<meta name="description" content="Compress JPG, PNG and WebP images online. Adjust quality, compare original and compressed file sizes, preview the result and download your compressed image.">
+<title>Image Compressor | Compress JPG, PNG & WebP | PixelCanvas Studio</title>
+
+<style>
+:root{--bg:#080b12;--card:#111722;--card2:#151d2a;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff;--green:#34d399;--danger:#fb7185}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.10),transparent 32rem),var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+.container{width:min(1000px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800}
+.logo{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.navlinks{display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:700}
+.navlinks a:hover{color:#fff}
+main{padding:38px 0 60px}
+.breadcrumb{color:var(--muted);font-size:12px;margin-bottom:18px}
+.breadcrumb a{color:var(--blue2)}
+.hero h1{font-size:clamp(30px,6vw,48px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:10px}
+.hero>p{max-width:720px;color:var(--muted);font-size:14px;margin-bottom:25px}
+.toolbox{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.dropzone{border:1.5px dashed #3a4a61;border-radius:17px;padding:38px 18px;text-align:center;background:rgba(255,255,255,.015);cursor:pointer;transition:.2s}
+.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:rgba(59,130,246,.06)}
+.upload-icon{font-size:34px;margin-bottom:8px}
+.dropzone h2{font-size:18px;margin-bottom:4px}
+.dropzone p{font-size:12px;color:var(--muted)}
+.dropzone input{display:none}
+.controls{display:none;margin-top:18px}
+.controls.show{display:block}
+.file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0d131d}
+.file-name{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-size{font-size:11px;color:var(--muted)}
+.remove{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:18px}
+.setting{margin-top:18px}
+.setting label{display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:700;margin-bottom:9px}
+.setting label span{color:var(--blue2)}
+input[type=range]{width:100%;accent-color:#3b82f6}
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.preset{padding:8px 12px;border-radius:9px;border:1px solid var(--border);background:#0d131d;color:#cbd5e1;cursor:pointer;font-size:12px}
+.preset:hover{border-color:var(--blue);color:#fff}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:750;font-size:13px}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.status{margin-top:14px;color:var(--muted);font-size:12px;min-height:18px}
+.results{display:none;margin-top:20px}
+.results.show{display:block}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.result-card{background:#0d131d;border:1px solid var(--border);border-radius:14px;padding:14px}
+.result-card h3{font-size:13px;margin-bottom:8px}
+.preview{width:100%;height:220px;display:flex;align-items:center;justify-content:center;background:#080b12;border-radius:10px;overflow:hidden}
+.preview img{max-width:100%;max-height:100%;object-fit:contain}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.stat{padding:13px;background:#0d131d;border:1px solid var(--border);border-radius:12px;text-align:center}
+.stat strong{display:block;font-size:17px}
+.stat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.download{width:100%;margin-top:12px}
+.info{margin-top:34px}
+.info h2{font-size:24px;letter-spacing:-.5px;margin-bottom:9px}
+.info h3{font-size:17px;margin:22px 0 7px}
+.info p,.info li{color:var(--muted);font-size:13px}
+.info ul{padding-left:20px;margin-top:8px}
+.info li{margin:5px 0}
+.tip{margin-top:18px;padding:15px;border:1px solid var(--border);border-radius:14px;background:rgba(59,130,246,.06)}
+.related{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.related a{padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;font-weight:700}
+.related a:hover{border-color:#3b82f6}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}
+.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}
+.footerlinks a:hover{color:#fff}
+@media(max-width:650px){.navlinks a:nth-child(2){display:none}.toolbox{padding:14px}.result-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.related{grid-template-columns:1fr}.preview{height:190px}}
+</style>
+</head>
+
+<body>
+<header>
+<div class="container nav">
+<a class="brand" href="/"><span class="logo">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="navlinks"><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="/">Home</a></nav>
+</div>
+</header>
+
+<main>
+<div class="container">
+<div class="breadcrumb"><a href="/">Home</a> / <a href="all-tools.html">Image Tools</a> / Image Compressor</div>
+
+<section class="hero">
+<h1>Image Compressor</h1>
+<p>Compress JPG, PNG and WebP images online. Adjust quality, compare file sizes, preview your result and download the compressed image.</p>
+</section>
+
+<section class="toolbox" aria-label="Image Compressor">
+<label class="dropzone" id="dropzone">
+<input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp">
+<div class="upload-icon">📤</div>
+<h2>Upload an image</h2>
+<p>Choose a JPG, PNG or WebP file, or drag and drop it here.</p>
+</label>
+
+<div class="controls" id="controls">
+<div class="file-row">
+<div><div class="file-name" id="fileName">—</div><div class="file-size" id="originalLabel">—</div></div>
+<button class="remove" id="removeBtn" aria-label="Remove image">×</button>
+</div>
+
+<div class="setting">
+<label for="quality">Compression quality <span id="qualityValue">75%</span></label>
+<input id="quality" type="range" min="10" max="100" value="75">
+<div class="presets">
+<button class="preset" data-q="40">Smaller file</button>
+<button class="preset" data-q="60">Balanced</button>
+<button class="preset" data-q="80">High quality</button>
+<button class="preset" data-q="90">Very high</button>
+</div>
+</div>
+
+<div class="actions">
+<button class="btn primary" id="compressBtn">⚙️ Compress Image</button>
+<button class="btn" id="anotherBtn">🔄 Choose Another</button>
+</div>
+<div class="status" id="status" aria-live="polite"></div>
+</div>
+
+<div class="results" id="results">
+<div class="result-grid">
+<div class="result-card"><h3>Original Preview</h3><div class="preview"><img id="originalPreview" alt="Original image preview"></div></div>
+<div class="result-card"><h3>Compressed Preview</h3><div class="preview"><img id="compressedPreview" alt="Compressed image preview"></div></div>
+</div>
+
+<div class="stats">
+<div class="stat"><strong id="originalSize">—</strong><span>Original size</span></div>
+<div class="stat"><strong id="compressedSize">—</strong><span>Compressed size</span></div>
+<div class="stat"><strong id="savedPercent">—</strong><span>Percentage saved</span></div>
+</div>
+
+<button class="btn primary download" id="downloadBtn" disabled>📥 Download Compressed Image</button>
+</div>
+</section>
+
+<section class="info">
+<h2>About the Image Compressor</h2>
+<p>PixelCanvas Studio's Image Compressor helps reduce the file size of common JPG, PNG and WebP images. Smaller files can be easier to upload, store and share. Compression settings affect the balance between file size and visual quality, so the best setting depends on how you plan to use the image.</p>
+
+<h3>How to use the Image Compressor</h3>
+<ol>
+<li>Select a JPG, PNG or WebP image.</li>
+<li>Adjust the quality slider or choose a preset.</li>
+<li>Select <strong>Compress Image</strong> to process the image.</li>
+<li>Compare the original and compressed previews and file sizes.</li>
+<li>Download the compressed result when you are satisfied with it.</li>
+</ol>
+
+<h3>Supported image formats</h3>
+<p>The tool accepts JPG/JPEG, PNG and WebP images. The available output is selected based on the source image format so that the tool can preserve the expected format while reducing file size.</p>
+
+<h3>Understanding image compression</h3>
+<p>Higher quality settings generally preserve more visual detail but may produce larger files. Lower settings can create smaller files but may introduce visible compression artifacts. For everyday sharing, a balanced setting is often a useful starting point. Always review the preview before downloading an important image.</p>
+
+<div class="tip">
+<strong>Tip:</strong>
+<p>For photographs, moderate compression can often reduce file size substantially while keeping the image visually useful. For graphics containing text or sharp edges, use a higher quality setting and inspect the result carefully.</p>
+</div>
+
+<h3>Privacy and temporary file handling</h3>
+<p>File handling depends on how the tool is implemented. This browser-based compressor processes the selected image locally on your device, so the image does not need to be uploaded to a server for the compression operation. Review the PixelCanvas Studio Privacy Policy for information about analytics, advertising and other website data practices.</p>
+
+<h3>Related tools</h3>
+<div class="related">
+<a href="image-resizer.html">📐 Image Resizer</a>
+<a href="image-format-converter.html">🔄 Image Format Converter</a>
+<a href="image-cropper.html">✂️ Image Cropper</a>
+</div>
+</section>
+</div>
+</main>
+
+<footer>
+<div class="container">
+<div class="footerlinks">
+<a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a>
+</div>
+© <span id="year"></span> PixelCanvas Studio. All rights reserved.
+</div>
+</footer>
+
+<script>
+const fileInput=document.getElementById("fileInput");
+const dropzone=document.getElementById("dropzone");
+const controls=document.getElementById("controls");
+const results=document.getElementById("results");
+const quality=document.getElementById("quality");
+const qualityValue=document.getElementById("qualityValue");
+const fileName=document.getElementById("fileName");
+const originalLabel=document.getElementById("originalLabel");
+const status=document.getElementById("status");
+const originalPreview=document.getElementById("originalPreview");
+const compressedPreview=document.getElementById("compressedPreview");
+const compressBtn=document.getElementById("compressBtn");
+const downloadBtn=document.getElementById("downloadBtn");
+
+let sourceFile=null, sourceImage=null, compressedBlob=null, originalUrl=null, compressedUrl=null;
+
+function formatBytes(bytes){
+ if(bytes<1024)return bytes+" B";
+ const units=["KB","MB","GB"]; let i=-1;
+ do{bytes/=1024;i++}while(bytes>=1024&&i<units.length-1);
+ return bytes.toFixed(bytes<10?2:1)+" "+units[i];
+}
+
+function loadFile(file){
+ if(!file)return;
+ const allowed=["image/jpeg","image/png","image/webp"];
+ if(!allowed.includes(file.type)){
+   status.textContent="Please choose a JPG, PNG or WebP image.";
+   return;
+ }
+ sourceFile=file;
+ if(originalUrl)URL.revokeObjectURL(originalUrl);
+ originalUrl=URL.createObjectURL(file);
+ originalPreview.src=originalUrl;
+ fileName.textContent=file.name;
+ originalLabel.textContent=formatBytes(file.size);
+ controls.classList.add("show");
+ results.classList.remove("show");
+ compressedBlob=null;
+ downloadBtn.disabled=true;
+ status.textContent="Image ready. Choose a quality setting and compress.";
+}
+
+fileInput.addEventListener("change",e=>loadFile(e.target.files[0]));
+dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});
+dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));
+dropzone.addEventListener("drop",e=>{
+ e.preventDefault();dropzone.classList.remove("drag");loadFile(e.dataTransfer.files[0]);
+});
+quality.addEventListener("input",()=>qualityValue.textContent=quality.value+"%");
+document.querySelectorAll(".preset").forEach(btn=>{
+ btn.addEventListener("click",()=>{quality.value=btn.dataset.q;qualityValue.textContent=quality.value+"%"});
+});
+
+document.getElementById("removeBtn").addEventListener("click",()=>{
+ sourceFile=null;sourceImage=null;compressedBlob=null;fileInput.value="";
+ controls.classList.remove("show");results.classList.remove("show");status.textContent="";
+ if(originalUrl)URL.revokeObjectURL(originalUrl);
+ if(compressedUrl)URL.revokeObjectURL(compressedUrl);
+ originalUrl=null;compressedUrl=null;
+});
+
+document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
+
+compressBtn.addEventListener("click",()=>{
+ if(!sourceFile)return;
+ status.textContent="Compressing image…";
+ const img=new Image();
+ img.onload=()=>{
+   sourceImage=img;
+   const canvas=document.createElement("canvas");
+   canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+   const ctx=canvas.getContext("2d",{alpha:true});
+   ctx.drawImage(img,0,0);
+
+   let outputType=sourceFile.type;
+   if(outputType==="image/png"){
+     // PNG compression is lossless in this browser canvas path; quality is not used.
+     outputType="image/png";
+   }
+
+   canvas.toBlob(blob=>{
+     if(!blob){status.textContent="This image could not be compressed in your browser.";return;}
+     compressedBlob=blob;
+     if(compressedUrl)URL.revokeObjectURL(compressedUrl);
+     compressedUrl=URL.createObjectURL(blob);
+     compressedPreview.src=compressedUrl;
+
+     const saved=Math.max(0,((sourceFile.size-blob.size)/sourceFile.size)*100);
+     document.getElementById("originalSize").textContent=formatBytes(sourceFile.size);
+     document.getElementById("compressedSize").textContent=formatBytes(blob.size);
+     document.getElementById("savedPercent").textContent=saved.toFixed(1)+"%";
+     results.classList.add("show");
+     downloadBtn.disabled=false;
+     status.textContent=blob.size<sourceFile.size?"Compression complete.":"The selected settings did not reduce the file size.";
+   },outputType,Number(quality.value)/100);
+ };
+ img.onerror=()=>status.textContent="The image could not be read.";
+ img.src=originalUrl;
+});
+
+downloadBtn.addEventListener("click",()=>{
+ if(!compressedBlob)return;
+ const ext=sourceFile.type==="image/png"?"png":sourceFile.type==="image/webp"?"webp":"jpg";
+ const base=sourceFile.name.replace(/\.[^/.]+$/,"");
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(compressedBlob);
+ a.download=base+"-compressed."+ext;
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+});
+
+document.getElementById("year").textContent=new Date().getFullYear();
+
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>

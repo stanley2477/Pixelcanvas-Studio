@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/social-media-resizer.html">
+<meta name="description" content="Resize images for Instagram, TikTok, LinkedIn, Facebook and YouTube with PixelCanvas Studio. Choose social media presets or custom dimensions, preview and download.">
+<title>Social Media Image Resizer | Instagram, TikTok & More | PixelCanvas Studio</title>
+<style>
+:root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.1),transparent 32rem),var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}
+.container{width:min(1000px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:9px;font-weight:800}.logo{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.navlinks{display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:700}.navlinks a:hover{color:#fff}
+main{padding:38px 0 60px}.breadcrumb{color:var(--muted);font-size:12px;margin-bottom:18px}.breadcrumb a{color:var(--blue2)}
+.hero h1{font-size:clamp(30px,6vw,48px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:10px}.hero>p{max-width:760px;color:var(--muted);font-size:14px;margin-bottom:25px}
+.toolbox{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.dropzone{border:1.5px dashed #3a4a61;border-radius:17px;padding:38px 18px;text-align:center;background:rgba(255,255,255,.015);cursor:pointer}.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:rgba(59,130,246,.06)}
+.dropzone input{display:none}.upload-icon{font-size:34px;margin-bottom:8px}.dropzone h2{font-size:18px;margin-bottom:4px}.dropzone p{font-size:12px;color:var(--muted)}
+.controls{display:none;margin-top:18px}.controls.show{display:block}.file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0d131d}
+.file-name{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-size{font-size:11px;color:var(--muted)}.remove{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:18px}
+.setting{margin-top:18px}.setting label{display:block;font-size:13px;font-weight:700;margin-bottom:9px}
+select,input[type=number]{width:100%;padding:11px 12px;background:#0d131d;color:#fff;border:1px solid var(--border);border-radius:10px;outline:none}select:focus,input:focus{border-color:var(--blue)}
+.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.preset{padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:#0d131d;color:#cbd5e1;cursor:pointer;font-size:12px}.preset:hover{border-color:var(--blue);color:#fff}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:750;font-size:13px}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.status{margin-top:14px;color:var(--muted);font-size:12px;min-height:18px}.results{display:none;margin-top:20px}.results.show{display:block}
+.preview{width:100%;height:330px;display:flex;align-items:center;justify-content:center;background:#080b12;border-radius:12px;overflow:hidden}.preview img{max-width:100%;max-height:100%;object-fit:contain}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.stat{padding:13px;background:#0d131d;border:1px solid var(--border);border-radius:12px;text-align:center}.stat strong{display:block;font-size:17px}.stat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}.download{width:100%;margin-top:12px}
+.info{margin-top:34px}.info h2{font-size:24px;letter-spacing:-.5px;margin-bottom:9px}.info h3{font-size:17px;margin:22px 0 7px}.info p,.info li{color:var(--muted);font-size:13px}.info ol{padding-left:20px;margin-top:8px}.info li{margin:5px 0}.tip{margin-top:18px;padding:15px;border:1px solid var(--border);border-radius:14px;background:rgba(59,130,246,.06)}
+.related{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.related a{padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;font-weight:700}.related a:hover{border-color:var(--blue)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}.footerlinks a:hover{color:#fff}
+@media(max-width:650px){.navlinks a:nth-child(2){display:none}.toolbox{padding:14px}.dim-grid,.stats{grid-template-columns:1fr}.related{grid-template-columns:1fr}.preview{height:250px}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="/"><span class="logo">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="navlinks"><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="/">Home</a></nav>
+</div></header>
+
+<main><div class="container">
+<div class="breadcrumb"><a href="/">Home</a> / <a href="all-tools.html">Image Tools</a> / Social Media Image Resizer</div>
+<section class="hero">
+<h1>Social Media Image Resizer</h1>
+<p>Resize images for popular social platforms using ready-made presets or custom dimensions. Crop, fit, preview and download an image sized for your intended platform.</p>
+</section>
+
+<section class="toolbox">
+<label class="dropzone" id="dropzone">
+<input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp">
+<div class="upload-icon">📱</div><h2>Upload an image</h2><p>Choose a JPG, PNG or WebP file, or drag and drop it here.</p>
+</label>
+
+<div class="controls" id="controls">
+<div class="file-row"><div><div class="file-name" id="fileName">—</div><div class="file-size" id="fileInfo">—</div></div><button class="remove" id="removeBtn" aria-label="Remove image">×</button></div>
+
+<div class="setting">
+<label for="preset">Social media preset</label>
+<select id="preset">
+<option value="instagram-square">Instagram Square — 1080 × 1080</option>
+<option value="instagram-portrait">Instagram Portrait — 1080 × 1350</option>
+<option value="instagram-landscape">Instagram Landscape — 1080 × 566</option>
+<option value="tiktok">TikTok — 1080 × 1920</option>
+<option value="linkedin">LinkedIn — 1200 × 627</option>
+<option value="facebook">Facebook — 1200 × 630</option>
+<option value="youtube">YouTube Thumbnail — 1280 × 720</option>
+<option value="custom">Custom Dimensions</option>
+</select>
+</div>
+
+<div class="setting" id="customSetting" style="display:none">
+<div class="dim-grid"><div><label for="width">Width (px)</label><input id="width" type="number" min="1" max="10000"></div><div><label for="height">Height (px)</label><input id="height" type="number" min="1" max="10000"></div></div>
+</div>
+
+<div class="setting">
+<label for="fit">Crop / fit option</label>
+<select id="fit"><option value="cover">Fill frame — crop to fit</option><option value="contain">Fit entire image — add background</option><option value="stretch">Stretch to dimensions</option></select>
+</div>
+
+<div class="setting">
+<label for="background">Fit background color</label>
+<input id="background" type="color" value="#ffffff" style="height:42px;padding:3px;cursor:pointer">
+</div>
+
+<div class="actions"><button class="btn primary" id="resizeBtn">⚙️ Resize Image</button><button class="btn" id="anotherBtn">🔄 Choose Another</button></div>
+<div class="status" id="status" aria-live="polite"></div>
+</div>
+
+<div class="results" id="results">
+<div class="preview"><img id="resultPreview" alt="Social media resized image preview"></div>
+<div class="stats"><div class="stat"><strong id="dimensions">—</strong><span>Output dimensions</span></div><div class="stat"><strong id="format">—</strong><span>Output format</span></div><div class="stat"><strong id="size">—</strong><span>Output size</span></div></div>
+<button class="btn primary download" id="downloadBtn" disabled>📥 Download Resized Image</button>
+</div>
+</section>
+
+<section class="info">
+<h2>About the Social Media Image Resizer</h2>
+<p>PixelCanvas Studio's Social Media Image Resizer provides common image-size presets for social platforms and video thumbnails. Instead of manually calculating dimensions, you can select a preset, choose how the image should fit inside the frame, preview the result and download it.</p>
+
+<h3>How to use the tool</h3>
+<ol><li>Upload a JPG, PNG or WebP image.</li><li>Select a social media preset or choose custom dimensions.</li><li>Choose whether to crop, fit or stretch the image.</li><li>Select a background color when the fit option leaves space around the image.</li><li>Preview the result and download the resized image.</li></ol>
+
+<h3>Social media presets</h3>
+<p>The presets provide commonly used starting dimensions for Instagram, TikTok, LinkedIn, Facebook and YouTube. Platform specifications can change, and individual placements may have different requirements, so check the destination platform's current specifications when exact dimensions are important.</p>
+
+<h3>Crop, fit and stretch</h3>
+<p><strong>Fill frame</strong> preserves the image proportions while cropping excess areas. <strong>Fit entire image</strong> keeps the complete image visible and fills unused space with the selected background color. <strong>Stretch</strong> forces the image into the target dimensions and may distort its proportions.</p>
+
+<div class="tip"><strong>Tip:</strong><p>Use a high-resolution original whenever possible. If important text or a person's face is close to the edge, preview the crop carefully before posting.</p></div>
+
+<h3>Privacy and file handling</h3>
+<p>The resizing operation on this page is performed in your browser. Your selected image is loaded locally for processing and does not need to be uploaded to a server for the basic resize operation. See the PixelCanvas Studio Privacy Policy for information about analytics, advertising and other website data practices.</p>
+
+<h3>Related tools</h3>
+<div class="related"><a href="image-resizer.html">📐 Image Resizer</a><a href="image-cropper.html">✂️ Image Cropper</a><a href="image-compressor.html">🗜️ Image Compressor</a></div>
+</section>
+</div></main>
+
+<footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
+
+<script>
+const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),results=document.getElementById("results"),status=document.getElementById("status"),preset=document.getElementById("preset"),customSetting=document.getElementById("customSetting"),fit=document.getElementById("fit"),background=document.getElementById("background"),resultPreview=document.getElementById("resultPreview"),downloadBtn=document.getElementById("downloadBtn");
+let file=null,url=null,resultBlob=null,resultUrl=null;
+const presets={ "instagram-square":[1080,1080],"instagram-portrait":[1080,1350],"instagram-landscape":[1080,566],tiktok:[1080,1920],linkedin:[1200,627],facebook:[1200,630],youtube:[1280,720]};
+function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
+function loadFile(f){if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){status.textContent="Please choose a JPG, PNG or WebP image.";return}file=f;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(f);const img=new Image();img.onload=()=>{document.getElementById("fileName").textContent=f.name;document.getElementById("fileInfo").textContent=bytes(f.size)+" • "+img.naturalWidth+" × "+img.naturalHeight+" px";controls.classList.add("show");results.classList.remove("show");downloadBtn.disabled=true;status.textContent="Image ready. Choose a platform preset."};img.src=url}
+fileInput.addEventListener("change",e=>loadFile(e.target.files[0]));dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");loadFile(e.dataTransfer.files[0])});
+preset.addEventListener("change",()=>{customSetting.style.display=preset.value==="custom"?"block":"none"});
+document.getElementById("removeBtn").addEventListener("click",()=>{file=null;fileInput.value="";controls.classList.remove("show");results.classList.remove("show");status.textContent="";if(url)URL.revokeObjectURL(url);if(resultUrl)URL.revokeObjectURL(resultUrl);url=null;resultUrl=null;resultBlob=null});
+document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
+function getDims(){if(preset.value==="custom")return[Math.max(1,Number(document.getElementById("width").value)),Math.max(1,Number(document.getElementById("height").value))];return presets[preset.value]}
+document.getElementById("resizeBtn").addEventListener("click",()=>{if(!file)return;const[w,h]=getDims();status.textContent="Resizing image…";const img=new Image();img.onload=()=>{const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");if(fit.value==="contain"){x.fillStyle=background.value;x.fillRect(0,0,w,h);const s=Math.min(w/img.naturalWidth,h/img.naturalHeight),dw=img.naturalWidth*s,dh=img.naturalHeight*s;x.drawImage(img,(w-dw)/2,(h-dh)/2,dw,dh)}else if(fit.value==="stretch"){x.drawImage(img,0,0,w,h)}else{const s=Math.max(w/img.naturalWidth,h/img.naturalHeight),dw=img.naturalWidth*s,dh=img.naturalHeight*s;x.drawImage(img,(w-dw)/2,(h-dh)/2,dw,dh)}c.toBlob(blob=>{if(!blob){status.textContent="Could not create the resized image.";return}resultBlob=blob;if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);resultPreview.src=resultUrl;document.getElementById("dimensions").textContent=w+" × "+h;document.getElementById("format").textContent="JPG";document.getElementById("size").textContent=bytes(blob.size);results.classList.add("show");downloadBtn.disabled=false;status.textContent="Resize complete."},"image/jpeg",.94)};img.src=url});
+downloadBtn.addEventListener("click",()=>{if(!resultBlob)return;const u=URL.createObjectURL(resultBlob),a=document.createElement("a");a.href=u;a.download="social-media-image.jpg";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+document.getElementById("year").textContent=new Date().getFullYear();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+</script>
+</body>
+</html>

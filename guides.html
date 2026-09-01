@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/guides.html">
+<meta name="description" content="PixelCanvas Studio guides for compressing, resizing, converting and managing images and PDF files. Learn how to use common file tools effectively.">
+<title>Guides | Image & PDF Tool Guides | PixelCanvas Studio</title>
+<style>
+:root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.1),transparent 32rem),var(--bg);color:var(--text);line-height:1.7}
+a{color:inherit;text-decoration:none}.container{width:min(1050px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:9px;font-weight:800}.logo{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.navlinks{display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:700}.navlinks a:hover{color:#fff}
+main{padding:42px 0 70px}.crumb{font-size:12px;color:var(--muted);margin-bottom:18px}.crumb a{color:var(--blue2)}
+.hero{max-width:800px}.hero h1{font-size:clamp(32px,6vw,52px);line-height:1.08;letter-spacing:-1.7px}.hero p{color:var(--muted);font-size:14px;margin-top:12px}
+.search{margin:25px 0;position:relative}.search input{width:100%;padding:14px 17px 14px 43px;background:var(--card);color:#fff;border:1px solid var(--border);border-radius:12px;outline:none}.search input:focus{border-color:var(--blue)}.search span{position:absolute;left:15px;top:10px;color:var(--muted);font-size:19px}
+.category{margin-top:34px}.category h2{font-size:22px;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.guide{display:block;background:var(--card);border:1px solid var(--border);border-radius:15px;padding:17px;transition:.18s}.guide:hover{border-color:#40536e;transform:translateY(-1px)}.tag{display:inline-block;color:var(--blue2);font-size:10px;font-weight:800;margin-bottom:7px}.guide h3{font-size:14px;line-height:1.35}.guide p{font-size:11px;color:var(--muted);margin-top:5px}.read{display:inline-block;margin-top:11px;font-size:11px;color:var(--blue2);font-weight:800}
+.note{margin-top:38px;padding:18px;border:1px solid var(--border);border-radius:14px;background:rgba(59,130,246,.06)}.note h2{font-size:18px;margin-bottom:4px}.note p{font-size:12px;color:var(--muted)}
+.empty{display:none;text-align:center;padding:35px;color:var(--muted);border:1px dashed var(--border);border-radius:14px}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}.footerlinks a:hover{color:#fff}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.navlinks a:nth-child(2){display:none}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="/"><span class="logo">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="navlinks"><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="/">Home</a></nav>
+</div></header>
+
+<main><div class="container">
+<div class="crumb"><a href="/">Home</a> / Guides</div>
+<section class="hero"><h1>Guides</h1><p>Learn practical ways to work with images and PDFs, understand common file formats, and get better results from PixelCanvas Studio tools.</p></section>
+
+<div class="search"><span>⌕</span><input id="search" type="search" placeholder="Search guides…" autocomplete="off"></div>
+<div id="empty" class="empty">No guides matched your search.</div>
+
+<section class="category">
+<h2>🖼️ Image Guides</h2>
+<div class="grid">
+<a class="guide" data-name="compress images reduce image file size" href="image-compressor.html"><span class="tag">IMAGE COMPRESSION</span><h3>How to Compress Images Without Losing Too Much Quality</h3><p>Understand image compression, quality settings and file-size tradeoffs.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="jpg png webp formats difference" href="image-format-converter.html"><span class="tag">IMAGE FORMATS</span><h3>JPG vs PNG vs WebP: Which Format Should You Use?</h3><p>Learn the practical differences between common image formats.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="resize images dimensions aspect ratio" href="image-resizer.html"><span class="tag">IMAGE RESIZING</span><h3>How to Resize an Image Correctly</h3><p>Learn about dimensions, aspect ratios and avoiding distorted images.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="crop images aspect ratio" href="image-cropper.html"><span class="tag">CROPPING</span><h3>How to Crop Images for the Right Shape</h3><p>Understand free cropping and common aspect-ratio presets.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="rotate flip images" href="image-rotator.html"><span class="tag">IMAGE EDITING</span><h3>How to Rotate or Flip an Image</h3><p>Fix image orientation and create horizontal or vertical flips.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="social media image sizes instagram tiktok youtube facebook linkedin" href="social-media-image-resizer.html"><span class="tag">SOCIAL MEDIA</span><h3>How to Resize Images for Social Media</h3><p>Prepare images for common social media layouts and dimensions.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="remove background image transparent" href="ai-background-remover.html"><span class="tag">BACKGROUNDS</span><h3>How to Get Cleaner Image Background Removals</h3><p>Learn what makes an image easier to separate from its background.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="extract text image ocr" href="image-to-text.html"><span class="tag">OCR</span><h3>How Image-to-Text OCR Works</h3><p>Learn how OCR extracts readable text and how to improve results.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="heic iphone convert jpg" href="heic-converter.html"><span class="tag">HEIC</span><h3>How to Convert HEIC Images to JPG</h3><p>Understand HEIC files and when conversion to JPG can help.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="passport photo requirements photo maker" href="passport-photo-maker.html"><span class="tag">PASSPORT PHOTOS</span><h3>How to Prepare a Passport-Style Photo</h3><p>Learn about framing, background, dimensions and checking requirements.</p><span class="read">Read guide →</span></a>
+</div>
+</section>
+
+<section class="category">
+<h2>📄 PDF & Document Guides</h2>
+<div class="grid">
+<a class="guide" data-name="photo images convert pdf" href="photo-to-pdf.html"><span class="tag">PDF CREATION</span><h3>How to Convert Photos to PDF</h3><p>Combine image files into an organized PDF document.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="jpg convert pdf" href="jpg-to-pdf.html"><span class="tag">JPG TO PDF</span><h3>How to Convert JPG Images to PDF</h3><p>Learn about page order, page size, orientation and margins.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="png convert pdf" href="png-to-pdf.html"><span class="tag">PNG TO PDF</span><h3>How to Convert PNG Images to PDF</h3><p>Understand how PNG graphics can be placed into PDF pages.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="pdf jpg convert pages images" href="pdf-to-jpg.html"><span class="tag">PDF TO IMAGE</span><h3>How to Convert PDF Pages to JPG</h3><p>Learn about page selection, image quality and checking converted pages.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="merge pdf files combine" href="pdf-merger.html"><span class="tag">PDF MERGING</span><h3>How to Merge Multiple PDF Files</h3><p>Organize PDF files and combine them into one document.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="split pdf pages ranges" href="pdf-splitter.html"><span class="tag">PDF SPLITTING</span><h3>How to Split a PDF Into Smaller Files</h3><p>Choose individual pages or ranges when separating a PDF.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="extract pdf pages" href="pdf-page-extractor.html"><span class="tag">PAGE EXTRACTION</span><h3>How to Extract Specific Pages From a PDF</h3><p>Create a new PDF containing only the pages you need.</p><span class="read">Read guide →</span></a>
+<a class="guide" data-name="compress reduce pdf file size" href="pdf-compressor.html"><span class="tag">PDF COMPRESSION</span><h3>How to Reduce PDF File Size</h3><p>Understand compression levels and why some PDFs shrink more than others.</p><span class="read">Read guide →</span></a>
+</div>
+</section>
+
+<section class="note"><h2>Use the dedicated tool pages</h2><p>These guides point you toward the relevant tool. Each tool page also contains its own instructions, supported-format information, tips and privacy notes so you can understand the workflow before processing a file.</p></section>
+</div></main>
+
+<footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="how-it-works.html">How It Works</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
+
+<script>
+const input=document.getElementById("search"),items=[...document.querySelectorAll(".guide")],empty=document.getElementById("empty");
+input.addEventListener("input",()=>{const q=input.value.trim().toLowerCase();let n=0;items.forEach(x=>{const show=!q||x.dataset.name.includes(q);x.style.display=show?"block":"none";if(show)n++});empty.style.display=q&&!n?"block":"none"});
+document.getElementById("year").textContent=new Date().getFullYear();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+</script>
+</body>
+</html>

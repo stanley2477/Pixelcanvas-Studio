@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/image-format-converter.html">
+<meta name="description" content="Convert images between JPG, PNG and WebP online. Choose an output format, adjust quality, preview your image and download the converted file with PixelCanvas Studio.">
+<title>Image Format Converter | JPG, PNG & WebP | PixelCanvas Studio</title>
+
+<style>
+:root{--bg:#080b12;--card:#111722;--card2:#151d2a;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff;--green:#34d399}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.10),transparent 32rem),var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}
+.container{width:min(1000px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800}.logo{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.navlinks{display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:700}.navlinks a:hover{color:#fff}
+main{padding:38px 0 60px}.breadcrumb{color:var(--muted);font-size:12px;margin-bottom:18px}.breadcrumb a{color:var(--blue2)}
+.hero h1{font-size:clamp(30px,6vw,48px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:10px}.hero>p{max-width:720px;color:var(--muted);font-size:14px;margin-bottom:25px}
+.toolbox{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.dropzone{border:1.5px dashed #3a4a61;border-radius:17px;padding:38px 18px;text-align:center;background:rgba(255,255,255,.015);cursor:pointer;transition:.2s}
+.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:rgba(59,130,246,.06)}
+.dropzone input{display:none}.upload-icon{font-size:34px;margin-bottom:8px}.dropzone h2{font-size:18px;margin-bottom:4px}.dropzone p{font-size:12px;color:var(--muted)}
+.controls{display:none;margin-top:18px}.controls.show{display:block}
+.file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0d131d}
+.file-name{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-size{font-size:11px;color:var(--muted)}
+.remove{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:18px}
+.setting{margin-top:18px}.setting label{display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:700;margin-bottom:9px}.setting label span{color:var(--blue2)}
+select{width:100%;padding:11px 12px;background:#0d131d;color:#fff;border:1px solid var(--border);border-radius:10px;outline:none}
+input[type=range]{width:100%;accent-color:#3b82f6}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:750;font-size:13px}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.status{margin-top:14px;color:var(--muted);font-size:12px;min-height:18px}
+.results{display:none;margin-top:20px}.results.show{display:block}
+.result-card{background:#0d131d;border:1px solid var(--border);border-radius:14px;padding:14px}.result-card h3{font-size:13px;margin-bottom:8px}
+.preview{width:100%;height:280px;display:flex;align-items:center;justify-content:center;background:#080b12;border-radius:10px;overflow:hidden}.preview img{max-width:100%;max-height:100%;object-fit:contain}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.stat{padding:13px;background:#0d131d;border:1px solid var(--border);border-radius:12px;text-align:center}.stat strong{display:block;font-size:17px}.stat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.download{width:100%;margin-top:12px}
+.info{margin-top:34px}.info h2{font-size:24px;letter-spacing:-.5px;margin-bottom:9px}.info h3{font-size:17px;margin:22px 0 7px}.info p,.info li{color:var(--muted);font-size:13px}.info ol{padding-left:20px;margin-top:8px}.info li{margin:5px 0}
+.tip{margin-top:18px;padding:15px;border:1px solid var(--border);border-radius:14px;background:rgba(59,130,246,.06)}
+.related{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.related a{padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;font-weight:700}.related a:hover{border-color:var(--blue)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}.footerlinks a:hover{color:#fff}
+@media(max-width:650px){.navlinks a:nth-child(2){display:none}.toolbox{padding:14px}.stats{grid-template-columns:1fr}.related{grid-template-columns:1fr}.preview{height:220px}}
+</style>
+</head>
+
+<body>
+<header><div class="container nav">
+<a class="brand" href="/"><span class="logo">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="navlinks"><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="/">Home</a></nav>
+</div></header>
+
+<main><div class="container">
+<div class="breadcrumb"><a href="/">Home</a> / <a href="all-tools.html">Image Tools</a> / Image Format Converter</div>
+
+<section class="hero">
+<h1>Image Format Converter</h1>
+<p>Convert images between JPG, PNG and WebP. Choose your output format, adjust quality where supported, preview the result and download your converted image.</p>
+</section>
+
+<section class="toolbox">
+<label class="dropzone" id="dropzone">
+<input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp">
+<div class="upload-icon">🔄</div>
+<h2>Upload an image</h2>
+<p>Choose a JPG, PNG or WebP file, or drag and drop it here.</p>
+</label>
+
+<div class="controls" id="controls">
+<div class="file-row">
+<div><div class="file-name" id="fileName">—</div><div class="file-size" id="originalLabel">—</div></div>
+<button class="remove" id="removeBtn" aria-label="Remove image">×</button>
+</div>
+
+<div class="setting">
+<label for="format">Convert to</label>
+<select id="format">
+<option value="image/jpeg">JPG</option>
+<option value="image/png">PNG</option>
+<option value="image/webp">WebP</option>
+</select>
+</div>
+
+<div class="setting" id="qualitySetting">
+<label for="quality">Quality <span id="qualityValue">85%</span></label>
+<input id="quality" type="range" min="10" max="100" value="85">
+</div>
+
+<div class="actions">
+<button class="btn primary" id="convertBtn">⚙️ Convert Image</button>
+<button class="btn" id="anotherBtn">🔄 Choose Another</button>
+</div>
+<div class="status" id="status" aria-live="polite"></div>
+</div>
+
+<div class="results" id="results">
+<div class="result-card"><h3>Converted Preview</h3><div class="preview"><img id="resultPreview" alt="Converted image preview"></div></div>
+<div class="stats">
+<div class="stat"><strong id="sourceFormat">—</strong><span>Original format</span></div>
+<div class="stat"><strong id="outputFormat">—</strong><span>Output format</span></div>
+<div class="stat"><strong id="outputSize">—</strong><span>Output size</span></div>
+</div>
+<button class="btn primary download" id="downloadBtn" disabled>📥 Download Converted Image</button>
+</div>
+</section>
+
+<section class="info">
+<h2>About the Image Format Converter</h2>
+<p>PixelCanvas Studio's Image Format Converter helps change common image files between JPG, PNG and WebP. Different formats are useful for different situations. JPG is widely supported and works well for photographs, PNG can preserve transparency, and WebP can provide efficient image delivery on many modern websites.</p>
+
+<h3>How to use the Image Format Converter</h3>
+<ol>
+<li>Upload a JPG, PNG or WebP image.</li>
+<li>Select the format you want to create: JPG, PNG or WebP.</li>
+<li>Adjust the quality setting when the selected output format supports lossy quality control.</li>
+<li>Select <strong>Convert Image</strong>.</li>
+<li>Review the converted preview and output information.</li>
+<li>Download the converted image.</li>
+</ol>
+
+<h3>JPG vs PNG vs WebP</h3>
+<p>JPG is commonly used for photographs and other images with many colors. PNG is useful when transparency or lossless image data is important. WebP supports both lossy and lossless image compression and is commonly used for web images. The best choice depends on compatibility, image content, transparency requirements and the intended destination.</p>
+
+<h3>Understanding quality settings</h3>
+<p>For JPG and WebP output, lower quality settings can reduce file size while increasing the chance of visible compression artifacts. Higher settings generally preserve more detail but can create larger files. PNG output is lossless in this browser-based conversion process, so its quality slider does not change the PNG encoding in the same way.</p>
+
+<div class="tip"><strong>Tip:</strong><p>If your image contains a transparent background, choose PNG or a format that supports transparency. Converting a transparent image to JPG can replace transparency with a solid background.</p></div>
+
+<h3>Privacy and file handling</h3>
+<p>This converter performs the image conversion locally in your browser. The selected image is loaded into the browser for processing and does not need to be uploaded to a server for the conversion operation. See the PixelCanvas Studio Privacy Policy for information about analytics, advertising and other website data practices.</p>
+
+<h3>Related tools</h3>
+<div class="related">
+<a href="image-compressor.html">🗜️ Image Compressor</a>
+<a href="image-resizer.html">📐 Image Resizer</a>
+<a href="heic-converter.html">📷 HEIC Converter</a>
+</div>
+</section>
+</div></main>
+
+<footer><div class="container">
+<div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>
+© <span id="year"></span> PixelCanvas Studio. All rights reserved.
+</div></footer>
+
+<script>
+const fileInput=document.getElementById("fileInput");
+const dropzone=document.getElementById("dropzone");
+const controls=document.getElementById("controls");
+const results=document.getElementById("results");
+const format=document.getElementById("format");
+const quality=document.getElementById("quality");
+const qualityValue=document.getElementById("qualityValue");
+const qualitySetting=document.getElementById("qualitySetting");
+const status=document.getElementById("status");
+const resultPreview=document.getElementById("resultPreview");
+const downloadBtn=document.getElementById("downloadBtn");
+
+let sourceFile=null,sourceImage=null,sourceUrl=null,resultBlob=null,resultUrl=null;
+
+function bytes(n){
+ if(n<1024)return n+" B";
+ if(n<1048576)return (n/1024).toFixed(1)+" KB";
+ return (n/1048576).toFixed(2)+" MB";
+}
+function formatName(type){return type==="image/png"?"PNG":type==="image/webp"?"WebP":"JPG"}
+
+function loadFile(file){
+ if(!file)return;
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
+  status.textContent="Please choose a JPG, PNG or WebP image.";return;
+ }
+ sourceFile=file;
+ if(sourceUrl)URL.revokeObjectURL(sourceUrl);
+ sourceUrl=URL.createObjectURL(file);
+ const img=new Image();
+ img.onload=()=>{
+  sourceImage=img;
+  document.getElementById("fileName").textContent=file.name;
+  document.getElementById("originalLabel").textContent=bytes(file.size)+" • "+img.naturalWidth+" × "+img.naturalHeight+" px";
+  controls.classList.add("show");results.classList.remove("show");downloadBtn.disabled=true;
+  status.textContent="Image ready. Choose an output format.";
+ };
+ img.onerror=()=>status.textContent="The image could not be read.";
+ img.src=sourceUrl;
+}
+fileInput.addEventListener("change",e=>loadFile(e.target.files[0]));
+dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});
+dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));
+dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");loadFile(e.dataTransfer.files[0])});
+
+quality.addEventListener("input",()=>qualityValue.textContent=quality.value+"%");
+format.addEventListener("change",()=>{
+ qualitySetting.style.display=format.value==="image/png"?"none":"block";
+});
+
+document.getElementById("removeBtn").addEventListener("click",()=>{
+ sourceFile=null;sourceImage=null;resultBlob=null;fileInput.value="";
+ controls.classList.remove("show");results.classList.remove("show");status.textContent="";
+ if(sourceUrl)URL.revokeObjectURL(sourceUrl);if(resultUrl)URL.revokeObjectURL(resultUrl);
+ sourceUrl=null;resultUrl=null;
+});
+document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
+
+document.getElementById("convertBtn").addEventListener("click",()=>{
+ if(!sourceImage)return;
+ status.textContent="Converting image…";
+ const canvas=document.createElement("canvas");
+ canvas.width=sourceImage.naturalWidth;canvas.height=sourceImage.naturalHeight;
+ const ctx=canvas.getContext("2d",{alpha:true});
+ if(format.value==="image/jpeg"){
+  ctx.fillStyle="#ffffff";ctx.fillRect(0,0,canvas.width,canvas.height);
+ }
+ ctx.drawImage(sourceImage,0,0);
+ canvas.toBlob(blob=>{
+  if(!blob){status.textContent="The image could not be converted.";return}
+  resultBlob=blob;if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);
+  resultPreview.src=resultUrl;
+  document.getElementById("sourceFormat").textContent=formatName(sourceFile.type);
+  document.getElementById("outputFormat").textContent=formatName(format.value);
+  document.getElementById("outputSize").textContent=bytes(blob.size);
+  results.classList.add("show");downloadBtn.disabled=false;status.textContent="Conversion complete.";
+ },format.value,Number(quality.value)/100);
+});
+
+downloadBtn.addEventListener("click",()=>{
+ if(!resultBlob)return;
+ const ext=format.value==="image/png"?"png":format.value==="image/webp"?"webp":"jpg";
+ const base=sourceFile.name.replace(/\.[^/.]+$/,"");
+ const url=URL.createObjectURL(resultBlob),a=document.createElement("a");
+ a.href=url;a.download=base+"-converted."+ext;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+document.getElementById("year").textContent=new Date().getFullYear();
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/">
+<meta name="description" content="Free image, PDF and document tools for compressing, resizing, converting, cropping, OCR, background removal, PDF editing and more.">
+<title>PixelCanvas Studio | Free Image, PDF & Document Tools</title>
+
+<style>
+:root{--bg:#080b12;--card:#111722;--card2:#151d2a;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff;--green:#34d399}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.10),transparent 32rem),var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.container{width:min(1120px,calc(100% - 30px));margin:auto}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(8,11,18,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;white-space:nowrap}
+.brand-mark{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-size:18px}
+.nav-links{display:flex;gap:20px}
+.nav-links a{color:var(--muted);font-size:14px;font-weight:600}
+.nav-links a:hover{color:#fff}
+.hero{text-align:center;padding:78px 0 55px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.03);color:#b9c5d6;font-size:12px;font-weight:700;margin-bottom:20px}
+.badge span{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.hero h1{max-width:850px;margin:0 auto 16px;font-size:clamp(36px,7vw,68px);line-height:1.02;letter-spacing:-2.5px}
+.hero h1 strong{color:var(--blue2)}
+.hero p{max-width:690px;margin:0 auto 28px;color:var(--muted);font-size:16px}
+.search{max-width:680px;margin:auto;position:relative}
+.search input{width:100%;padding:17px 20px 17px 48px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:15px;outline:none}
+.search input:focus{border-color:var(--blue)}
+.search-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:17px}
+.btn{padding:11px 17px;border-radius:11px;border:1px solid var(--border);background:var(--card);color:#dce4ef;font-size:13px;font-weight:700}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.section{padding:34px 0}
+.head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:18px}
+.head h2{font-size:25px;letter-spacing:-.7px}
+.head p{color:var(--muted);font-size:13px}
+.featured,.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.feature{padding:22px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(145deg,#121927,#0d121b)}
+.feature:hover,.tool:hover{background:var(--card2);border-color:#34445c}
+.icon{width:45px;height:45px;border-radius:13px;display:grid;place-items:center;background:rgba(59,130,246,.12);font-size:22px;margin-bottom:15px}
+.feature h3{font-size:17px;margin-bottom:6px}
+.feature p,.tool p{color:var(--muted);font-size:13px}
+.link{color:var(--blue2);font-size:13px;font-weight:800}
+.tool{display:flex;align-items:center;gap:13px;padding:16px;border:1px solid var(--border);border-radius:15px;background:var(--card)}
+.tool .icon{width:40px;height:40px;flex:0 0 40px;margin:0;font-size:19px}
+.tool h3{font-size:14px;margin-bottom:2px}
+.tool p{font-size:11px;line-height:1.35;color:#718096}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.step,.trust{padding:20px;background:var(--card);border:1px solid var(--border);border-radius:16px}
+.num{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:rgba(59,130,246,.12);color:#9bc2ff;font-weight:800;font-size:13px;margin-bottom:13px}
+.step h3{font-size:15px;margin-bottom:5px}.step p{color:var(--muted);font-size:12px}
+.trust-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:25px;align-items:center}
+.trust h2{font-size:25px;margin-bottom:9px}.trust p{color:var(--muted);font-size:14px}
+.trust-list{display:grid;gap:10px}.trust-item{display:flex;gap:10px;color:#c8d2df;font-size:13px}.trust-item span{color:var(--green)}
+.faq{display:grid;gap:10px}
+details{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+summary{cursor:pointer;list-style:none;padding:16px 18px;font-size:14px;font-weight:750}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";float:right;color:var(--blue2);font-size:18px}
+details[open] summary:after{content:"−"}
+details p{padding:0 18px 17px;color:var(--muted);font-size:13px}
+.cta{text-align:center;padding:50px 20px}.cta h2{font-size:30px;margin-bottom:9px}.cta p{max-width:650px;margin:auto;color:var(--muted);font-size:14px}
+footer{margin-top:35px;border-top:1px solid rgba(255,255,255,.07);padding:30px 0;color:#718096;font-size:12px}
+.footer-top,.footer-bottom{display:flex;justify-content:space-between;gap:20px}
+.footer-top{margin-bottom:18px}.footer-brand{color:#dce4ef;font-weight:800}.footer-links{display:flex;flex-wrap:wrap;gap:14px}
+.footer-bottom{padding-top:17px;border-top:1px solid rgba(255,255,255,.06)}
+.hidden{display:none!important}
+@media(max-width:850px){.featured,.grid{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:repeat(2,1fr)}.trust-grid{grid-template-columns:1fr}}
+@media(max-width:620px){.container{width:calc(100% - 22px)}.nav{min-height:62px}.nav-links{gap:10px}.nav-links a:nth-child(2){display:none}.hero{padding:58px 0 40px}.hero h1{letter-spacing:-1.7px}.hero p{font-size:14px}.featured,.grid,.steps{grid-template-columns:1fr}.section{padding:27px 0}.head{align-items:flex-start;flex-direction:column}.footer-top,.footer-bottom{flex-direction:column}}
+</style>
+</head>
+
+<body>
+<header class="site-header">
+<div class="container nav">
+<a href="/" class="brand"><span class="brand-mark">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="nav-links" aria-label="Main navigation">
+<a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="#faq">FAQ</a>
+</nav>
+</div>
+</header>
+
+<main>
+<section class="hero">
+<div class="container">
+<div class="badge"><span></span>Free online image, PDF & document tools</div>
+<h1>Simple tools for your <strong>digital files.</strong></h1>
+<p>Compress, resize, convert, crop, scan, edit and prepare images and PDF documents with easy-to-use online tools.</p>
+<div class="search">
+<span class="search-icon">⌕</span>
+<input id="toolSearch" type="search" placeholder="Search image, PDF or document tools..." aria-label="Search tools">
+</div>
+<div class="actions">
+<a class="btn primary" href="all-tools.html">Explore All Tools</a>
+<a class="btn" href="#image-tools">Image Tools</a>
+<a class="btn" href="#pdf-tools">PDF & Document Tools</a>
+</div>
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+<div class="head"><div><h2>Featured Tools</h2><p>Popular tools for everyday image and document tasks.</p></div></div>
+<div class="featured">
+<a class="feature searchable" data-name="image compressor compress images" href="image-compressor.html"><div class="icon">🗜️</div><h3>Image Compressor</h3><p>Reduce image file size while keeping your images useful and clear.</p><span class="link">Open tool →</span></a>
+<a class="feature searchable" data-name="jpg to pdf image to pdf" href="jpg-to-pdf.html"><div class="icon">📄</div><h3>JPG to PDF</h3><p>Turn one or more JPG images into an organized PDF document.</p><span class="link">Open tool →</span></a>
+<a class="feature searchable" data-name="image to text ocr" href="image-to-text.html"><div class="icon">🔤</div><h3>Image to Text OCR</h3><p>Extract readable text from images and review or copy the result.</p><span class="link">Open tool →</span></a>
+</div>
+</div>
+</section>
+
+<section class="section" id="image-tools">
+<div class="container">
+<div class="head"><div><h2>🖼️ Image Tools</h2><p>Tools for editing, converting, preparing and processing images.</p></div></div>
+<div class="grid">
+<a class="tool searchable" data-name="image compressor" href="image-compressor.html"><div class="icon">🗜️</div><div><h3>Image Compressor</h3><p>Compress JPG, PNG and WebP.</p></div></a>
+<a class="tool searchable" data-name="image resizer resize" href="image-resizer.html"><div class="icon">📐</div><div><h3>Image Resizer</h3><p>Resize with custom dimensions.</p></div></a>
+<a class="tool searchable" data-name="image format converter jpg png webp" href="image-format-converter.html"><div class="icon">🔄</div><div><h3>Image Format Converter</h3><p>Convert JPG, PNG and WebP.</p></div></a>
+<a class="tool searchable" data-name="ai background remover" href="background-remover.html"><div class="icon">✨</div><div><h3>AI Background Remover</h3><p>Remove image backgrounds.</p></div></a>
+<a class="tool searchable" data-name="passport photo maker" href="passport-photo.html"><div class="icon">🪪</div><div><h3>Passport Photo Maker</h3><p>Prepare passport-style photos.</p></div></a>
+<a class="tool searchable" data-name="social media image resizer instagram tiktok linkedin facebook youtube" href="social-media-resizer.html"><div class="icon">📱</div><div><h3>Social Media Image Resizer</h3><p>Resize for social platforms.</p></div></a>
+<a class="tool searchable" data-name="image cropper crop" href="image-cropper.html"><div class="icon">✂️</div><div><h3>Image Cropper</h3><p>Crop with flexible ratios.</p></div></a>
+<a class="tool searchable" data-name="image rotator rotate flip" href="image-rotator.html"><div class="icon">↻</div><div><h3>Image Rotator</h3><p>Rotate and flip images.</p></div></a>
+<a class="tool searchable" data-name="image to text ocr" href="image-to-text.html"><div class="icon">🔤</div><div><h3>Image to Text OCR</h3><p>Extract text from images.</p></div></a>
+<a class="tool searchable" data-name="heic converter jpg png" href="heic-converter.html"><div class="icon">📷</div><div><h3>HEIC Converter</h3><p>Convert HEIC images.</p></div></a>
+</div>
+</div>
+</section>
+
+<section class="section" id="pdf-tools">
+<div class="container">
+<div class="head"><div><h2>📄 PDF & Document Tools</h2><p>Convert, combine, split, compress and extract PDF content.</p></div></div>
+<div class="grid">
+<a class="tool searchable" data-name="photo to pdf" href="photo-to-pdf.html"><div class="icon">🖼️</div><div><h3>Photo to PDF</h3><p>Combine images into a PDF.</p></div></a>
+<a class="tool searchable" data-name="pdf to jpg" href="pdf-to-jpg.html"><div class="icon">📑</div><div><h3>PDF to JPG</h3><p>Convert PDF pages to images.</p></div></a>
+<a class="tool searchable" data-name="jpg to pdf" href="jpg-to-pdf.html"><div class="icon">🖼️</div><div><h3>JPG to PDF</h3><p>Convert JPG images to PDF.</p></div></a>
+<a class="tool searchable" data-name="png to pdf" href="png-to-pdf.html"><div class="icon">🖼️</div><div><h3>PNG to PDF</h3><p>Convert PNG images to PDF.</p></div></a>
+<a class="tool searchable" data-name="pdf merger merge pdf" href="pdf-merger.html"><div class="icon">➕</div><div><h3>PDF Merger</h3><p>Combine multiple PDFs.</p></div></a>
+<a class="tool searchable" data-name="pdf splitter split pdf" href="pdf-splitter.html"><div class="icon">✂️</div><div><h3>PDF Splitter</h3><p>Split selected PDF pages.</p></div></a>
+<a class="tool searchable" data-name="pdf compressor compress pdf" href="pdf-compressor.html"><div class="icon">🗜️</div><div><h3>PDF Compressor</h3><p>Reduce PDF file size.</p></div></a>
+<a class="tool searchable" data-name="pdf page extractor extract pages" href="pdf-page-extractor.html"><div class="icon">📄</div><div><h3>PDF Page Extractor</h3><p>Extract selected PDF pages.</p></div></a>
+</div>
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+<div class="head"><div><h2>Popular Tools</h2><p>Quick access to common file tasks.</p></div></div>
+<div class="grid">
+<a class="tool" href="image-compressor.html"><div class="icon">🗜️</div><div><h3>Compress Images</h3><p>Reduce image size.</p></div></a>
+<a class="tool" href="jpg-to-pdf.html"><div class="icon">📄</div><div><h3>JPG to PDF</h3><p>Create PDFs from JPGs.</p></div></a>
+<a class="tool" href="pdf-compressor.html"><div class="icon">🗜️</div><div><h3>Compress PDF</h3><p>Reduce PDF size.</p></div></a>
+<a class="tool" href="image-to-text.html"><div class="icon">🔤</div><div><h3>Image to Text</h3><p>Extract text with OCR.</p></div></a>
+<a class="tool" href="heic-converter.html"><div class="icon">📷</div><div><h3>HEIC Converter</h3><p>Convert HEIC images.</p></div></a>
+<a class="tool" href="pdf-merger.html"><div class="icon">➕</div><div><h3>Merge PDFs</h3><p>Combine documents.</p></div></a>
+</div>
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+<div class="head"><div><h2>How It Works</h2><p>Simple steps for most PixelCanvas Studio tools.</p></div></div>
+<div class="steps">
+<div class="step"><div class="num">1</div><h3>Upload</h3><p>Select an image or PDF from your device. Supported file types vary by tool.</p></div>
+<div class="step"><div class="num">2</div><h3>Process</h3><p>Choose available settings and start the selected operation.</p></div>
+<div class="step"><div class="num">3</div><h3>Preview</h3><p>Review the result where a preview is available.</p></div>
+<div class="step"><div class="num">4</div><h3>Download</h3><p>Download your processed result when the operation is complete.</p></div>
+</div>
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+<div class="trust">
+<div class="trust-grid">
+<div><h2>Designed with privacy in mind</h2><p>PixelCanvas Studio is designed to make common image and document tasks simple while minimizing unnecessary data handling. File processing and deletion practices can vary by tool and are explained in our privacy information.</p></div>
+<div class="trust-list">
+<div class="trust-item"><span>✓</span>No account required for the core tools.</div>
+<div class="trust-item"><span>✓</span>Clear information about file handling.</div>
+<div class="trust-item"><span>✓</span>Results can be downloaded after processing.</div>
+<div class="trust-item"><span>✓</span>Privacy and Terms pages are available.</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section" id="faq">
+<div class="container">
+<div class="head"><div><h2>Frequently Asked Questions</h2><p>General information about PixelCanvas Studio.</p></div></div>
+<div class="faq">
+<details><summary>What is PixelCanvas Studio?</summary><p>PixelCanvas Studio is an online collection of image, PDF and document tools for common tasks such as compression, resizing, conversion, cropping, OCR and PDF processing.</p></details>
+<details><summary>Are the tools free to use?</summary><p>The website is designed to provide free access to its core tools. Individual tools may have their own processing limits or technical requirements, which will be explained on the relevant tool page.</p></details>
+<details><summary>Do I need to create an account?</summary><p>No account is planned for the core PixelCanvas Studio experience. You can use the available tools without creating a user account.</p></details>
+<details><summary>What types of files are supported?</summary><p>Supported formats depend on the tool. Common image formats include JPG, PNG and WebP, while PDF tools process PDF documents. Each tool page identifies the formats it supports.</p></details>
+<details><summary>Are uploaded files stored permanently?</summary><p>PixelCanvas Studio is designed to use temporary file processing where server-side processing is required. File handling and deletion practices are described in the Privacy Policy and on relevant tool pages.</p></details>
+<details><summary>Can I use PixelCanvas Studio on my phone?</summary><p>Yes. The website is designed to work on modern mobile browsers, tablets and desktop devices. Some tools may behave differently depending on the device and browser.</p></details>
+<details><summary>Can I download my processed result?</summary><p>Yes. Tools that produce downloadable results provide a download option after processing is completed.</p></details>
+<details><summary>Can I share my result?</summary><p>Where supported, you can use the device's sharing features or another available sharing option. Sharing availability can vary by browser and device.</p></details>
+<details><summary>Does PixelCanvas Studio guarantee passport-photo acceptance?</summary><p>No. Passport and identity-photo requirements vary by country, authority, application type and submission method. Users should verify current requirements with the relevant authority before submitting a photo.</p></details>
+<details><summary>What should I do if a tool does not work?</summary><p>Check that your file matches the supported format and size, try again, and use a current browser. If the problem continues, use the Contact page to report the issue.</p></details>
+</div>
+</div>
+</section>
+
+<section class="cta"><div class="container"><h2>Choose a tool and get started.</h2><p>Explore the full collection of image, PDF and document tools built for everyday digital tasks.</p></div></section>
+</main>
+
+<footer>
+<div class="container">
+<div class="footer-top">
+<div class="footer-brand">PixelCanvas Studio</div>
+<div class="footer-links">
+<a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="faq.html">FAQ</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a>
+</div>
+</div>
+<div class="footer-bottom"><span>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</span><span>Image, PDF & Document Tools</span></div>
+</div>
+</footer>
+
+<script>
+"use strict";
+document.getElementById("year").textContent=new Date().getFullYear();
+
+const input=document.getElementById("toolSearch");
+const cards=document.querySelectorAll(".searchable");
+input.addEventListener("input",function(){
+    const q=this.value.trim().toLowerCase();
+    cards.forEach(card=>{
+        const text=(card.dataset.name||"").toLowerCase();
+        card.classList.toggle("hidden",!!q && !text.includes(q));
+    });
+});
+
+if("serviceWorker" in navigator){
+    window.addEventListener("load",()=>{
+        navigator.serviceWorker.register("/sw.js").catch(()=>{});
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/image-rotator.html">
+<meta name="description" content="Rotate and flip JPG, PNG and WebP images online. Rotate 90, 180 or 270 degrees, flip horizontally or vertically, preview the result and download it with PixelCanvas Studio.">
+<title>Image Rotator | Rotate & Flip Images Online | PixelCanvas Studio</title>
+<style>
+:root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.1),transparent 32rem),var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}button{font:inherit}
+.container{width:min(1000px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:9px;font-weight:800}.logo{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.navlinks{display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:700}.navlinks a:hover{color:#fff}
+main{padding:38px 0 60px}.breadcrumb{color:var(--muted);font-size:12px;margin-bottom:18px}.breadcrumb a{color:var(--blue2)}
+.hero h1{font-size:clamp(30px,6vw,48px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:10px}.hero>p{max-width:760px;color:var(--muted);font-size:14px;margin-bottom:25px}
+.toolbox{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.dropzone{display:block;border:1.5px dashed #3a4a61;border-radius:17px;padding:38px 18px;text-align:center;background:rgba(255,255,255,.015);cursor:pointer}.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:rgba(59,130,246,.06)}
+.dropzone input{display:none}.upload-icon{font-size:34px;margin-bottom:8px}.dropzone h2{font-size:18px;margin-bottom:4px}.dropzone p{font-size:12px;color:var(--muted)}
+.controls{display:none;margin-top:18px}.controls.show{display:block}.file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0d131d}.file-name{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-size{font-size:11px;color:var(--muted)}.remove{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:18px}
+.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}.action{padding:12px;border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:10px;cursor:pointer;font-weight:700;font-size:12px}.action:hover{border-color:var(--blue);color:#fff}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:750;font-size:13px}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.status{margin-top:14px;color:var(--muted);font-size:12px;min-height:18px}.results{display:none;margin-top:20px}.results.show{display:block}
+.preview{width:100%;height:360px;display:flex;align-items:center;justify-content:center;background:#080b12;border-radius:12px;overflow:hidden}.preview img{max-width:100%;max-height:340px;object-fit:contain}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.stat{padding:13px;background:#0d131d;border:1px solid var(--border);border-radius:12px;text-align:center}.stat strong{display:block;font-size:17px}.stat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}.download{width:100%;margin-top:12px}
+.info{margin-top:34px}.info h2{font-size:24px;letter-spacing:-.5px;margin-bottom:9px}.info h3{font-size:17px;margin:22px 0 7px}.info p,.info li{color:var(--muted);font-size:13px}.info ol{padding-left:20px;margin-top:8px}.info li{margin:5px 0}.tip{margin-top:18px;padding:15px;border:1px solid var(--border);border-radius:14px;background:rgba(59,130,246,.06)}
+.related{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.related a{padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;font-weight:700}.related a:hover{border-color:var(--blue)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}.footerlinks a:hover{color:#fff}
+@media(max-width:650px){.navlinks a:nth-child(2){display:none}.toolbox{padding:14px}.action-grid,.stats{grid-template-columns:1fr}.related{grid-template-columns:1fr}.preview{height:280px}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="/"><span class="logo">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="navlinks"><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="/">Home</a></nav>
+</div></header>
+
+<main><div class="container">
+<div class="breadcrumb"><a href="/">Home</a> / <a href="all-tools.html">Image Tools</a> / Image Rotator</div>
+<section class="hero"><h1>Image Rotator</h1><p>Rotate and flip JPG, PNG and WebP images online. Turn an image by 90°, 180° or 270°, flip it horizontally or vertically, preview the result and download it.</p></section>
+
+<section class="toolbox">
+<label class="dropzone" id="dropzone"><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp"><div class="upload-icon">🔄</div><h2>Upload an image</h2><p>Choose a JPG, PNG or WebP file, or drag and drop it here.</p></label>
+
+<div class="controls" id="controls">
+<div class="file-row"><div><div class="file-name" id="fileName">—</div><div class="file-size" id="fileInfo">—</div></div><button class="remove" id="removeBtn" aria-label="Remove image">×</button></div>
+
+<div class="action-grid">
+<button class="action" data-action="90">↻ Rotate 90°</button>
+<button class="action" data-action="180">↻ Rotate 180°</button>
+<button class="action" data-action="270">↻ Rotate 270°</button>
+<button class="action" data-action="flipH">↔ Flip Horizontal</button>
+<button class="action" data-action="flipV">↕ Flip Vertical</button>
+<button class="action" data-action="reset">↺ Reset</button>
+</div>
+
+<div class="actions"><button class="btn primary" id="applyBtn">✨ Apply Transform</button><button class="btn" id="anotherBtn">🔄 Choose Another</button></div>
+<div class="status" id="status" aria-live="polite"></div>
+</div>
+
+<div class="results" id="results">
+<div class="preview"><img id="resultPreview" alt="Rotated image preview"></div>
+<div class="stats"><div class="stat"><strong id="dimensions">—</strong><span>Output dimensions</span></div><div class="stat"><strong id="transform">—</strong><span>Transform</span></div><div class="stat"><strong id="size">—</strong><span>Output size</span></div></div>
+<button class="btn primary download" id="downloadBtn" disabled>📥 Download Rotated Image</button>
+</div>
+</section>
+
+<section class="info">
+<h2>About the Image Rotator</h2>
+<p>PixelCanvas Studio's Image Rotator makes it easy to correct image orientation or create a flipped version of a photo or graphic. You can rotate an image in quarter-turn increments, flip it horizontally or vertically, preview the result and download the transformed file.</p>
+
+<h3>How to use the Image Rotator</h3>
+<ol><li>Upload a JPG, PNG or WebP image.</li><li>Choose 90°, 180° or 270° rotation, or use a horizontal/vertical flip.</li><li>Use Reset if you want to remove the selected transformations.</li><li>Select <strong>Apply Transform</strong>.</li><li>Review the preview and output dimensions.</li><li>Download the transformed image.</li></ol>
+
+<h3>When to rotate or flip an image</h3>
+<p>Rotation is useful when a photograph was captured in the wrong orientation or when you need a different composition. Horizontal flipping creates a mirror image, while vertical flipping turns the image upside down. Be careful with graphics containing text because flipping them can make the text appear backwards or upside down.</p>
+
+<h3>Image quality</h3>
+<p>The transformed image is rendered again in the browser. Keeping the original file is recommended when image quality is important. For photographs, the output format and encoding can affect file size and visual quality.</p>
+
+<div class="tip"><strong>Tip:</strong><p>If the image contains readable text, logos or directional objects, use rotation rather than mirroring unless you specifically want a reversed image.</p></div>
+
+<h3>Privacy and file handling</h3>
+<p>The rotation and flipping operations are performed in your browser. The selected image is loaded locally for processing and does not need to be uploaded to a server for these basic transformations. See the PixelCanvas Studio Privacy Policy for information about analytics, advertising and other website data practices.</p>
+
+<h3>Related tools</h3>
+<div class="related"><a href="image-cropper.html">✂️ Image Cropper</a><a href="image-resizer.html">📐 Image Resizer</a><a href="image-format-converter.html">🔄 Image Format Converter</a></div>
+</section>
+</div></main>
+
+<footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
+
+<script>
+const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),results=document.getElementById("results"),status=document.getElementById("status"),resultPreview=document.getElementById("resultPreview"),downloadBtn=document.getElementById("downloadBtn");
+let file=null,url=null,rotation=0,flipH=false,flipV=false,resultBlob=null;
+function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
+function loadFile(f){if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){status.textContent="Please choose a JPG, PNG or WebP image.";return}file=f;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(f);const img=new Image();img.onload=()=>{document.getElementById("fileName").textContent=f.name;document.getElementById("fileInfo").textContent=bytes(f.size)+" • "+img.naturalWidth+" × "+img.naturalHeight+" px";controls.classList.add("show");results.classList.remove("show");downloadBtn.disabled=true;status.textContent="Image ready. Choose a transform."};img.src=url}
+fileInput.addEventListener("change",e=>loadFile(e.target.files[0]));dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");loadFile(e.dataTransfer.files[0])});
+document.querySelectorAll(".action").forEach(b=>b.addEventListener("click",()=>{const a=b.dataset.action;if(a==="90")rotation=(rotation+90)%360;if(a==="180")rotation=(rotation+180)%360;if(a==="270")rotation=(rotation+270)%360;if(a==="flipH")flipH=!flipH;if(a==="flipV")flipV=!flipV;if(a==="reset"){rotation=0;flipH=false;flipV=false}status.textContent="Transform: "+rotation+"°"+(flipH?" • horizontal flip":"")+(flipV?" • vertical flip":"")}));
+document.getElementById("removeBtn").addEventListener("click",()=>{file=null;fileInput.value="";controls.classList.remove("show");results.classList.remove("show");status.textContent="";if(url)URL.revokeObjectURL(url);url=null;resultBlob=null});
+document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
+document.getElementById("applyBtn").addEventListener("click",()=>{if(!file)return;status.textContent="Applying transform…";const img=new Image();img.onload=()=>{const swap=rotation===90||rotation===270,w=swap?img.naturalHeight:img.naturalWidth,h=swap?img.naturalWidth:img.naturalHeight,c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.translate(w/2,h/2);x.rotate(rotation*Math.PI/180);x.scale(flipH?-1:1,flipV?-1:1);x.drawImage(img,-img.naturalWidth/2,-img.naturalHeight/2);c.toBlob(blob=>{if(!blob){status.textContent="Could not create the transformed image.";return}resultBlob=blob;const u=URL.createObjectURL(blob);resultPreview.src=u;document.getElementById("dimensions").textContent=w+" × "+h;document.getElementById("transform").textContent=rotation+"°"+(flipH?" + H flip":"")+(flipV?" + V flip":"");document.getElementById("size").textContent=bytes(blob.size);results.classList.add("show");downloadBtn.disabled=false;status.textContent="Transform complete."},"image/png")};img.src=url});
+downloadBtn.addEventListener("click",()=>{if(!resultBlob)return;const u=URL.createObjectURL(resultBlob),a=document.createElement("a");a.href=u;a.download="rotated-image.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+document.getElementById("year").textContent=new Date().getFullYear();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+</script>
+</body>
+</html>

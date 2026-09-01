@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/image-to-text.html">
+<meta name="description" content="Extract text from images online with PixelCanvas Studio. Upload or capture an image, recognize text, edit the extracted result, copy it or download it as a text file.">
+<title>Image to Text OCR | Extract Text From Images | PixelCanvas Studio</title>
+<style>
+:root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.1),transparent 32rem),var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}button,textarea{font:inherit}
+.container{width:min(1000px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:9px;font-weight:800}.logo{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.navlinks{display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:700}.navlinks a:hover{color:#fff}
+main{padding:38px 0 60px}.breadcrumb{color:var(--muted);font-size:12px;margin-bottom:18px}.breadcrumb a{color:var(--blue2)}
+.hero h1{font-size:clamp(30px,6vw,48px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:10px}.hero>p{max-width:760px;color:var(--muted);font-size:14px;margin-bottom:25px}
+.toolbox{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.upload-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.upload{border:1.5px dashed #3a4a61;border-radius:17px;padding:30px 15px;text-align:center;background:rgba(255,255,255,.015);cursor:pointer}.upload:hover{border-color:var(--blue);background:rgba(59,130,246,.06)}
+.upload input{display:none}.upload-icon{font-size:31px;margin-bottom:6px}.upload h2{font-size:16px}.upload p{font-size:11px;color:var(--muted)}
+.controls{display:none;margin-top:18px}.controls.show{display:block}.file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0d131d}.file-name{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-info{font-size:11px;color:var(--muted)}.remove{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:18px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:750;font-size:13px}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}
+.status{margin-top:14px;color:var(--muted);font-size:12px;min-height:18px}.work{display:none;margin-top:20px}.work.show{display:block}.panels{display:grid;grid-template-columns:1fr 1fr;gap:12px}.panel{background:#0d131d;border:1px solid var(--border);border-radius:14px;padding:14px}.panel h3{font-size:13px;margin-bottom:8px}
+.image-preview{height:300px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px;background:#080b12}.image-preview img{max-width:100%;max-height:100%;object-fit:contain}
+textarea{width:100%;min-height:300px;resize:vertical;background:#080b12;color:#eef2f7;border:1px solid var(--border);border-radius:10px;padding:12px;outline:none;font-size:13px;line-height:1.55}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}.stat{padding:11px;background:#0d131d;border:1px solid var(--border);border-radius:10px;text-align:center}.stat strong{display:block;font-size:16px}.stat span{display:block;color:var(--muted);font-size:10px}
+.info{margin-top:34px}.info h2{font-size:24px;letter-spacing:-.5px;margin-bottom:9px}.info h3{font-size:17px;margin:22px 0 7px}.info p,.info li{color:var(--muted);font-size:13px}.info ol{padding-left:20px;margin-top:8px}.info li{margin:5px 0}.tip{margin-top:18px;padding:15px;border:1px solid var(--border);border-radius:14px;background:rgba(59,130,246,.06)}
+.related{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.related a{padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;font-weight:700}.related a:hover{border-color:var(--blue)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}.footerlinks a:hover{color:#fff}
+@media(max-width:650px){.navlinks a:nth-child(2){display:none}.toolbox{padding:14px}.upload-row,.panels{grid-template-columns:1fr}.image-preview{height:230px}.stats{grid-template-columns:1fr}.related{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="/"><span class="logo">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="navlinks"><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="/">Home</a></nav>
+</div></header>
+
+<main><div class="container">
+<div class="breadcrumb"><a href="/">Home</a> / <a href="all-tools.html">Image Tools</a> / Image to Text OCR</div>
+<section class="hero"><h1>Image to Text OCR</h1><p>Extract text from images with OCR. Upload or capture an image, recognize the text, edit the result, copy it or download it as a text file.</p></section>
+
+<section class="toolbox">
+<div class="upload-row">
+<label class="upload"><input id="fileInput" type="file" accept="image/*" capture="environment"><div class="upload-icon">📷</div><h2>Camera / Upload</h2><p>Take a photo or choose an image containing text.</p></label>
+<label class="upload"><input id="fileInput2" type="file" accept="image/*"><div class="upload-icon">🖼️</div><h2>Choose Image</h2><p>Select an existing image from your device.</p></label>
+</div>
+
+<div class="controls" id="controls">
+<div class="file-row"><div><div class="file-name" id="fileName">—</div><div class="file-info" id="fileInfo">—</div></div><button class="remove" id="removeBtn" aria-label="Remove image">×</button></div>
+<div class="actions"><button class="btn primary" id="ocrBtn">🔎 Extract Text</button><button class="btn" id="anotherBtn">🔄 Choose Another</button></div>
+<div class="status" id="status" aria-live="polite"></div>
+</div>
+
+<div class="work" id="work">
+<div class="panels">
+<div class="panel"><h3>Image Preview</h3><div class="image-preview"><img id="imagePreview" alt="Image selected for OCR"></div></div>
+<div class="panel"><h3>Extracted Text</h3><textarea id="textOutput" placeholder="Recognized text will appear here…"></textarea></div>
+</div>
+<div class="stats"><div class="stat"><strong id="charCount">0</strong><span>Characters</span></div><div class="stat"><strong id="wordCount">0</strong><span>Words</span></div></div>
+<div class="actions"><button class="btn primary" id="copyBtn">📋 Copy Text</button><button class="btn" id="downloadBtn">📥 Download Text</button><button class="btn" id="clearBtn">🗑️ Clear Text</button></div>
+</div>
+</section>
+
+<section class="info">
+<h2>About Image to Text OCR</h2>
+<p>PixelCanvas Studio's Image to Text OCR tool is designed to turn visible text in images into editable text. It can be useful for notes, printed documents, screenshots, signs, receipts and other images where you need to reuse the written content.</p>
+
+<h3>How to use the OCR tool</h3>
+<ol><li>Take a photo or upload an image containing readable text.</li><li>Review the image preview.</li><li>Select <strong>Extract Text</strong> to run OCR.</li><li>Review and correct the recognized text in the editable text box.</li><li>Copy the text or download it as a text file.</li></ol>
+
+<h3>How to improve OCR accuracy</h3>
+<p>Use a sharp, well-lit image with the text facing the camera. Avoid severe blur, glare, extreme perspective and very small text. Clean backgrounds and strong contrast between text and its background can also help recognition.</p>
+
+<h3>OCR limitations</h3>
+<p>OCR is not perfect. Handwriting, decorative fonts, low-resolution images, unusual layouts, tables and images containing overlapping objects may produce errors. Always proofread extracted text before using it for important documents or records.</p>
+
+<div class="tip"><strong>Tip:</strong><p>For a receipt or document, take the photo straight-on and include the entire page in the frame. A higher-resolution original generally gives OCR more information to work with.</p></div>
+
+<h3>Privacy and file handling</h3>
+<p>The interface is prepared for browser-based OCR. The selected image can be processed locally when the OCR engine is loaded in the browser, depending on the final OCR implementation. Review the PixelCanvas Studio Privacy Policy for the site's broader analytics, advertising and data practices.</p>
+
+<h3>Related tools</h3>
+<div class="related"><a href="image-format-converter.html">🔄 Image Format Converter</a><a href="image-compressor.html">🗜️ Image Compressor</a><a href="photo-to-pdf.html">📄 Photo to PDF</a></div>
+</section>
+</div></main>
+
+<footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
+
+<script>
+const fileInput=document.getElementById("fileInput"),fileInput2=document.getElementById("fileInput2"),controls=document.getElementById("controls"),work=document.getElementById("work"),status=document.getElementById("status"),imagePreview=document.getElementById("imagePreview"),textOutput=document.getElementById("textOutput");
+let file=null,url=null;
+function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
+function loadFile(f){if(!f)return;if(!f.type.startsWith("image/")){status.textContent="Please choose an image file.";return}file=f;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(f);imagePreview.src=url;document.getElementById("fileName").textContent=f.name;document.getElementById("fileInfo").textContent=bytes(f.size);controls.classList.add("show");work.classList.add("show");status.textContent="Image ready. Select Extract Text to run OCR."}
+fileInput.addEventListener("change",e=>loadFile(e.target.files[0]));fileInput2.addEventListener("change",e=>loadFile(e.target.files[0]));
+document.getElementById("removeBtn").addEventListener("click",()=>{file=null;fileInput.value="";fileInput2.value="";controls.classList.remove("show");work.classList.remove("show");textOutput.value="";status.textContent="";if(url)URL.revokeObjectURL(url);url=null;updateCounts()});
+document.getElementById("anotherBtn").addEventListener("click",()=>fileInput2.click());
+function updateCounts(){const t=textOutput.value.trim();document.getElementById("charCount").textContent=textOutput.value.length;document.getElementById("wordCount").textContent=t?t.split(/\s+/).length:0}
+textOutput.addEventListener("input",updateCounts);
+document.getElementById("ocrBtn").addEventListener("click",()=>{
+ if(!file)return;
+ status.textContent="OCR engine is ready to be connected. Add the production OCR library/model to perform text recognition.";
+ textOutput.value="";updateCounts();
+});
+document.getElementById("copyBtn").addEventListener("click",async()=>{
+ if(!textOutput.value)return;try{await navigator.clipboard.writeText(textOutput.value);status.textContent="Text copied to clipboard."}catch{status.textContent="Copy is unavailable in this browser. Select the text and copy it manually."}
+});
+document.getElementById("downloadBtn").addEventListener("click",()=>{
+ const blob=new Blob([textOutput.value],{type:"text/plain;charset=utf-8"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="extracted-text.txt";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);
+});
+document.getElementById("clearBtn").addEventListener("click",()=>{textOutput.value="";updateCounts();status.textContent="Extracted text cleared."});
+document.getElementById("year").textContent=new Date().getFullYear();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+</script>
+</body>
+</html>

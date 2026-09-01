@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PixelCanvas Studio">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pixelcanvasstudio.com/image-cropper.html">
+<meta name="description" content="Crop JPG, PNG and WebP images online. Use free crop, square and aspect-ratio presets, rotate and position your image, preview the result and download it with PixelCanvas Studio.">
+<title>Image Cropper | Crop JPG, PNG & WebP Online | PixelCanvas Studio</title>
+<style>
+:root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:radial-gradient(circle at top,rgba(59,130,246,.1),transparent 32rem),var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}
+.container{width:min(1000px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:9px;font-weight:800}.logo{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.navlinks{display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:700}.navlinks a:hover{color:#fff}
+main{padding:38px 0 60px}.breadcrumb{color:var(--muted);font-size:12px;margin-bottom:18px}.breadcrumb a{color:var(--blue2)}
+.hero h1{font-size:clamp(30px,6vw,48px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:10px}.hero>p{max-width:760px;color:var(--muted);font-size:14px;margin-bottom:25px}
+.toolbox{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.dropzone{border:1.5px dashed #3a4a61;border-radius:17px;padding:38px 18px;text-align:center;background:rgba(255,255,255,.015);cursor:pointer}.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:rgba(59,130,246,.06)}
+.dropzone input{display:none}.upload-icon{font-size:34px;margin-bottom:8px}.dropzone h2{font-size:18px;margin-bottom:4px}.dropzone p{font-size:12px;color:var(--muted)}
+.controls{display:none;margin-top:18px}.controls.show{display:block}.file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0d131d}
+.file-name{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-size{font-size:11px;color:var(--muted)}.remove{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:18px}
+.setting{margin-top:18px}.setting label{display:block;font-size:13px;font-weight:700;margin-bottom:9px}.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+select,input[type=number]{width:100%;padding:11px 12px;background:#0d131d;color:#fff;border:1px solid var(--border);border-radius:10px;outline:none}select:focus,input:focus{border-color:var(--blue)}
+.presets{display:flex;gap:8px;flex-wrap:wrap}.preset{padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:#0d131d;color:#cbd5e1;cursor:pointer;font-size:12px}.preset:hover{border-color:var(--blue);color:#fff}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{border:1px solid var(--border);background:#0d131d;color:#dbe4ef;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:750;font-size:13px}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.status{margin-top:14px;color:var(--muted);font-size:12px;min-height:18px}.editor{display:none;margin-top:20px}.editor.show{display:block}
+.canvas-wrap{width:100%;display:flex;justify-content:center;align-items:center;background:#080b12;border:1px solid var(--border);border-radius:14px;padding:12px;overflow:hidden}.canvas-wrap canvas{max-width:100%;max-height:520px;display:block;cursor:crosshair}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.stat{padding:13px;background:#0d131d;border:1px solid var(--border);border-radius:12px;text-align:center}.stat strong{display:block;font-size:17px}.stat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.info{margin-top:34px}.info h2{font-size:24px;letter-spacing:-.5px;margin-bottom:9px}.info h3{font-size:17px;margin:22px 0 7px}.info p,.info li{color:var(--muted);font-size:13px}.info ol{padding-left:20px;margin-top:8px}.info li{margin:5px 0}.tip{margin-top:18px;padding:15px;border:1px solid var(--border);border-radius:14px;background:rgba(59,130,246,.06)}
+.related{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.related a{padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;font-weight:700}.related a:hover{border-color:var(--blue)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}.footerlinks a:hover{color:#fff}
+@media(max-width:650px){.navlinks a:nth-child(2){display:none}.toolbox{padding:14px}.dim-grid,.stats{grid-template-columns:1fr}.related{grid-template-columns:1fr}.canvas-wrap canvas{max-height:400px}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="/"><span class="logo">✦</span><span>PixelCanvas Studio</span></a>
+<nav class="navlinks"><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="/">Home</a></nav>
+</div></header>
+
+<main><div class="container">
+<div class="breadcrumb"><a href="/">Home</a> / <a href="all-tools.html">Image Tools</a> / Image Cropper</div>
+<section class="hero"><h1>Image Cropper</h1><p>Crop JPG, PNG and WebP images online. Choose a free crop or an aspect-ratio preset, rotate and position the image, preview the result and download it.</p></section>
+
+<section class="toolbox">
+<label class="dropzone" id="dropzone"><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp"><div class="upload-icon">✂️</div><h2>Upload an image</h2><p>Choose a JPG, PNG or WebP file, or drag and drop it here.</p></label>
+
+<div class="controls" id="controls">
+<div class="file-row"><div><div class="file-name" id="fileName">—</div><div class="file-size" id="fileInfo">—</div></div><button class="remove" id="removeBtn" aria-label="Remove image">×</button></div>
+
+<div class="setting"><label for="ratio">Crop shape / aspect ratio</label><select id="ratio">
+<option value="free">Free crop</option><option value="1">Square — 1:1</option><option value="4/3">4:3</option><option value="3/2">3:2</option><option value="16/9">16:9</option><option value="9/16">9:16</option>
+</select></div>
+
+<div class="setting"><label>Quick crop presets</label><div class="presets">
+<button class="preset" data-p="center">Center Crop</button><button class="preset" data-p="top">Top Crop</button><button class="preset" data-p="bottom">Bottom Crop</button><button class="preset" data-p="left">Left Crop</button><button class="preset" data-p="right">Right Crop</button>
+</div></div>
+
+<div class="setting"><label for="rotation">Rotate</label><select id="rotation"><option value="0">0°</option><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></div>
+
+<div class="actions"><button class="btn primary" id="cropBtn">✂️ Crop Image</button><button class="btn" id="anotherBtn">🔄 Choose Another</button></div>
+<div class="status" id="status" aria-live="polite"></div>
+</div>
+
+<div class="editor" id="editor">
+<div class="canvas-wrap"><canvas id="canvas"></canvas></div>
+<div class="stats"><div class="stat"><strong id="cropDimensions">—</strong><span>Crop dimensions</span></div><div class="stat"><strong id="rotationInfo">0°</strong><span>Rotation</span></div><div class="stat"><strong id="outputSize">—</strong><span>Output size</span></div></div>
+<button class="btn primary" id="downloadBtn" disabled style="width:100%;margin-top:12px">📥 Download Cropped Image</button>
+</div>
+</section>
+
+<section class="info">
+<h2>About the Image Cropper</h2>
+<p>PixelCanvas Studio's Image Cropper helps remove unwanted areas from an image and prepare it for a specific shape or composition. You can use a free crop, select a common aspect ratio, apply a quick positioning preset, rotate the image and download the cropped result.</p>
+
+<h3>How to use the Image Cropper</h3>
+<ol><li>Upload a JPG, PNG or WebP image.</li><li>Select free crop or choose an aspect-ratio preset.</li><li>Choose a quick crop position if useful.</li><li>Select a rotation angle if the image needs to be turned.</li><li>Select <strong>Crop Image</strong> and review the result.</li><li>Download the cropped image.</li></ol>
+
+<h3>Free crop and aspect ratios</h3>
+<p>Free crop is useful when you want flexible composition. Fixed ratios are useful when a destination requires a particular shape, such as a square profile image or a wide thumbnail. Cropping removes parts of the original image, so review the composition before downloading.</p>
+
+<h3>Rotating and positioning</h3>
+<p>The cropper can rotate an image by 90°, 180° or 270°. Quick position presets provide a convenient way to favor the center, top, bottom, left or right area of the source image when creating a crop.</p>
+
+<div class="tip"><strong>Tip:</strong><p>Keep important faces, text and other key subjects away from the crop boundary whenever possible. For a precise crop, use the original high-resolution image.</p></div>
+
+<h3>Privacy and file handling</h3>
+<p>The basic cropping operation is performed in your browser. The selected image is loaded locally for processing and does not need to be uploaded to a server for the crop operation. See the PixelCanvas Studio Privacy Policy for information about analytics, advertising and other website data practices.</p>
+
+<h3>Related tools</h3>
+<div class="related"><a href="image-resizer.html">📐 Image Resizer</a><a href="social-media-resizer.html">📱 Social Media Resizer</a><a href="image-compressor.html">🗜️ Image Compressor</a></div>
+</section>
+</div></main>
+
+<footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
+
+<script>
+const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),editor=document.getElementById("editor"),status=document.getElementById("status"),ratioSelect=document.getElementById("ratio"),rotation=document.getElementById("rotation"),canvas=document.getElementById("canvas"),ctx=canvas.getContext("2d"),downloadBtn=document.getElementById("downloadBtn");
+let file=null,url=null,img=null,resultBlob=null;
+
+function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
+function loadFile(f){if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){status.textContent="Please choose a JPG, PNG or WebP image.";return}file=f;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(f);img=new Image();img.onload=()=>{document.getElementById("fileName").textContent=f.name;document.getElementById("fileInfo").textContent=bytes(f.size)+" • "+img.naturalWidth+" × "+img.naturalHeight+" px";controls.classList.add("show");editor.classList.remove("show");downloadBtn.disabled=true;status.textContent="Image ready. Choose your crop settings.";};img.src=url}
+fileInput.addEventListener("change",e=>loadFile(e.target.files[0]));dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");loadFile(e.dataTransfer.files[0])});
+document.getElementById("removeBtn").addEventListener("click",()=>{file=null;img=null;fileInput.value="";controls.classList.remove("show");editor.classList.remove("show");status.textContent="";if(url)URL.revokeObjectURL(url);url=null;resultBlob=null});
+document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
+document.querySelectorAll(".preset").forEach(b=>b.addEventListener("click",()=>{const p=b.dataset.p;if(p==="center")status.textContent="Center crop selected.";else status.textContent=p.charAt(0).toUpperCase()+p.slice(1)+" crop selected.";ratioSelect.dataset.position=p}));
+function cropSource(){
+ let sw=img.naturalWidth,sh=img.naturalHeight,desired=ratioSelect.value;
+ if(desired!=="free"){
+  const r=eval(desired);if(sw/sh>r)sw=Math.round(sh*r);else sh=Math.round(sw/r);
+ }
+ const pos=ratioSelect.dataset.position||"center";let sx=(img.naturalWidth-sw)/2,sy=(img.naturalHeight-sh)/2;
+ if(pos==="top")sy=0;if(pos==="bottom")sy=img.naturalHeight-sh;if(pos==="left")sx=0;if(pos==="right")sx=img.naturalWidth-sw;
+ return [Math.max(0,sx),Math.max(0,sy),sw,sh];
+}
+document.getElementById("cropBtn").addEventListener("click",()=>{
+ if(!img)return;status.textContent="Cropping image…";
+ const [sx,sy,sw,sh]=cropSource(),deg=Number(rotation.value),rad=deg*Math.PI/180,swap=deg===90||deg===270;
+ canvas.width=swap?sh:sw;canvas.height=swap?sw:sh;ctx.save();ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(rad);ctx.drawImage(img,sx,sy,sw,sh,-sw/2,-sh/2,sw,sh);ctx.restore();
+ canvas.toBlob(blob=>{if(!blob){status.textContent="Could not create the cropped image.";return}resultBlob=blob;document.getElementById("cropDimensions").textContent=canvas.width+" × "+canvas.height;document.getElementById("rotationInfo").textContent=deg+"°";document.getElementById("outputSize").textContent=bytes(blob.size);editor.classList.add("show");downloadBtn.disabled=false;status.textContent="Crop complete."},"image/png");
+});
+downloadBtn.addEventListener("click",()=>{if(!resultBlob)return;const u=URL.createObjectURL(resultBlob),a=document.createElement("a");a.href=u;a.download="cropped-image.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+document.getElementById("year").textContent=new Date().getFullYear();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
