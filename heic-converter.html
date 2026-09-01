@@ -54,7 +54,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 
 <section class="toolbox">
 <label class="dropzone" id="dropzone">
-<input id="fileInput" type="file" accept="image/heic,image/heif,.heic,.heif" multiple>
+<input id="fileInput" type="file" accept="image/*,.heic,.heif" multiple>
 <div class="upload-icon">📷</div><h2>Upload HEIC images</h2><p>Select one or multiple HEIC/HEIF files, or drag and drop them here.</p>
 </label>
 
@@ -114,10 +114,7 @@ function addFiles(list){const valid=Array.from(list).filter(f=>{
  return (
   name.endsWith(".heic") ||
   name.endsWith(".heif") ||
-  type==="image/heic" ||
-  type==="image/heif" ||
-  type==="image/heic-sequence" ||
-  type==="image/heif-sequence"
+  type.startsWith("image/")
  );
 });if(!valid.length){setStatus("Please choose HEIC or HEIF files.");return}files=[...files,...valid];renderFiles();results.classList.remove("show");setStatus(files.length+" file"+(files.length===1?"":"s")+" ready.")}
 fileInput.addEventListener("change",e=>{addFiles(e.target.files);fileInput.value=""});
