@@ -71,7 +71,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 
 <div class="results" id="results">
 <div class="result-grid" id="resultGrid"></div>
-<button class="btn primary download" id="downloadAllBtn" disabled>📥 Download All Converted Images</button>
+
 </div>
 </section>
 
@@ -91,7 +91,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 <div class="tip"><strong>Tip:</strong><p>If compatibility is your main goal, JPG is usually the practical choice for ordinary photographs. Keep your original HEIC files when you may need their original quality or metadata later.</p></div>
 
 <h3>Privacy and file handling</h3>
-<p>HEIC decoding requires a compatible browser-side conversion engine. The final production implementation should process selected files using the chosen HEIC library and its documented data-handling method. Review the PixelCanvas Studio Privacy Policy before processing sensitive images.</p>
+<p>HEIC decoding and conversion are performed in the browser using the HEIC conversion library loaded by this page. The selected image files are processed on your device rather than uploaded to a PixelCanvas Studio application server. Review the PixelCanvas Studio Privacy Policy for the site’s broader analytics, advertising and data practices.</p>
 
 <h3>Related tools</h3>
 <div class="related"><a href="image-format-converter.html">🔄 Image Format Converter</a><a href="image-compressor.html">🗜️ Image Compressor</a><a href="image-resizer.html">📐 Image Resizer</a></div>
@@ -100,28 +100,40 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 
 <footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
 
+<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
 <script>
-const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),fileList=document.getElementById("fileList"),status=document.getElementById("status"),results=document.getElementById("results"),resultGrid=document.getElementById("resultGrid"),format=document.getElementById("format"),quality=document.getElementById("quality"),q2=document.getElementById("q2"),downloadAllBtn=document.getElementById("downloadAllBtn");
+const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),fileList=document.getElementById("fileList"),status=document.getElementById("status"),results=document.getElementById("results"),resultGrid=document.getElementById("resultGrid"),format=document.getElementById("format"),quality=document.getElementById("quality"),q2=document.getElementById("q2"),qualityValue=document.getElementById("qualityValue");
 let files=[],converted=[];
 function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
-function renderFiles(){fileList.innerHTML="";files.forEach((f,i)=>{const d=document.createElement("div");d.className="file-row";d.innerHTML='<div><div class="file-name">'+f.name+'</div><div class="file-info">'+bytes(f.size)+'</div></div><button class="remove-file" data-i="'+i+'" aria-label="Remove file">×</button>';fileList.appendChild(d)});controls.classList.toggle("show",files.length>0)}
-function addFiles(list){const incoming=Array.from(list);const valid=incoming.filter(f=>/\.heic$|\.heif$/i.test(f.name)||f.type==="image/heic"||f.type==="image/heif");if(!valid.length){status.textContent="Please choose HEIC or HEIF files.";return}files=[...files,...valid];renderFiles();results.classList.remove("show");status.textContent=files.length+" file"+(files.length===1?"":"s")+" ready."}
-fileInput.addEventListener("change",e=>{addFiles(e.target.files);fileInput.value=""});dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");addFiles(e.dataTransfer.files)});
+function setStatus(t){status.textContent=t}
+function renderFiles(){fileList.innerHTML="";files.forEach((f,i)=>{const d=document.createElement("div");d.className="file-row";d.innerHTML='<div><div class="file-name"></div><div class="file-info"></div></div><button class="remove-file" data-i="'+i+'" aria-label="Remove file">×</button>';d.querySelector('.file-name').textContent=f.name;d.querySelector('.file-info').textContent=bytes(f.size);fileList.appendChild(d)});controls.classList.toggle("show",files.length>0)}
+function addFiles(list){const valid=Array.from(list).filter(f=>/\.heic$|\.heif$/i.test(f.name)||f.type==="image/heic"||f.type==="image/heif");if(!valid.length){setStatus("Please choose HEIC or HEIF files.");return}files=[...files,...valid];renderFiles();results.classList.remove("show");setStatus(files.length+" file"+(files.length===1?"":"s")+" ready.")}
+fileInput.addEventListener("change",e=>{addFiles(e.target.files);fileInput.value=""});
+dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");addFiles(e.dataTransfer.files)});
 fileList.addEventListener("click",e=>{if(e.target.classList.contains("remove-file")){files.splice(Number(e.target.dataset.i),1);renderFiles()}});
-quality.addEventListener("input",()=>{q2.textContent=quality.value+"%";document.getElementById("qualityValue").textContent=quality.value+"%"});
+quality.addEventListener("input",()=>{q2.textContent=quality.value+"%";qualityValue.textContent=quality.value+"%"});
 document.getElementById("addBtn").addEventListener("click",()=>fileInput.click());
-document.getElementById("clearBtn").addEventListener("click",()=>{files=[];converted=[];renderFiles();results.classList.remove("show");status.textContent=""});
-document.getElementById("convertBtn").addEventListener("click",async()=>{
- if(!files.length)return;
- status.textContent="Preparing HEIC conversion…";
- resultGrid.innerHTML="";converted=[];
- status.textContent="A production HEIC decoding library is required for actual conversion in this browser.";
- for(const f of files){
-  const card=document.createElement("div");card.className="result";card.innerHTML="<strong>"+f.name+"</strong><small>HEIC/HEIF file selected — converter engine pending integration.</small>";resultGrid.appendChild(card);
- }
- results.classList.add("show");downloadAllBtn.disabled=true;
-});
-document.getElementById("downloadAllBtn").addEventListener("click",()=>{if(!converted.length)return});
+document.getElementById("clearBtn").addEventListener("click",()=>{files=[];converted.forEach(x=>x.url&&URL.revokeObjectURL(x.url));converted=[];renderFiles();resultGrid.innerHTML="";results.classList.remove("show");setStatus("")});
+async function convertOne(file,index,total){
+ setStatus("Converting "+(index+1)+" of "+total+"…");
+ const toType=format.value;
+ const result=await heic2any({blob:file,toType,quality:Number(quality.value)/100,multiple:false});
+ const blob=Array.isArray(result)?result[0]:result;
+ if(!blob)throw new Error("No converted image returned");
+ const ext=toType==="image/png"?"png":"jpg";
+ const base=file.name.replace(/\.(heic|heif)$/i,"")||"image";
+ const name=base+"."+ext;
+ const url=URL.createObjectURL(blob);
+ converted.push({blob,url,name});
+ const card=document.createElement("div");card.className="result";
+ const img=document.createElement("img");img.src=url;img.alt="Converted "+file.name;
+ const title=document.createElement("strong");title.textContent=name;
+ const info=document.createElement("small");info.textContent=bytes(blob.size);
+ const dl=document.createElement("button");dl.className="btn primary";dl.type="button";dl.textContent="📥 Download "+ext.toUpperCase();dl.style.width="100%";dl.style.marginTop="10px";
+ dl.addEventListener("click",()=>{const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;a.style.display="none";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)});
+ card.append(img,title,info,dl);resultGrid.appendChild(card);
+}
+document.getElementById("convertBtn").addEventListener("click",async()=>{if(!files.length){setStatus("Please select at least one HEIC or HEIF image.");return}const button=document.getElementById("convertBtn");button.disabled=true;resultGrid.innerHTML="";converted.forEach(x=>x.url&&URL.revokeObjectURL(x.url));converted=[];results.classList.add("show");try{for(let i=0;i<files.length;i++)await convertOne(files[i],i,files.length);setStatus(converted.length+" image"+(converted.length===1?"":"s")+" converted successfully.")}catch(e){console.error(e);setStatus("HEIC conversion failed. Please try another HEIC/HEIF image or refresh and try again.")}finally{button.disabled=false}});
 document.getElementById("year").textContent=new Date().getFullYear();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
 </script>

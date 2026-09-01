@@ -12,6 +12,8 @@
 <link rel="canonical" href="https://pixelcanvasstudio.com/pdf-splitter.html">
 <meta name="description" content="Split PDF files online with PixelCanvas Studio. Upload a PDF, preview pages, select page ranges or individual pages, remove unwanted pages, create separate PDFs and download them.">
 <title>PDF Splitter | Split PDF Pages Online | PixelCanvas Studio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
 <style>
 :root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
@@ -94,19 +96,459 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 <footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
 
 <script>
-const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),status=document.getElementById("status"),pageGrid=document.getElementById("pageGrid"),mode=document.getElementById("mode"),rangeSetting=document.getElementById("rangeSetting"),pagesSetting=document.getElementById("pagesSetting");
-let file=null,totalPages=0,selectedPages=new Set(),splitBlobs=[];
-function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
-function load(f){if(!f)return;if(f.type!=="application/pdf"&&!/\.pdf$/i.test(f.name)){status.textContent="Please choose a PDF file.";return}file=f;document.getElementById("fileName").textContent=f.name;document.getElementById("fileInfo").textContent=bytes(f.size);controls.classList.add("show");status.textContent="PDF selected. The page count will be available when the PDF rendering library is connected."}
-function renderPages(){pageGrid.innerHTML="";if(!totalPages){pageGrid.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:12px">PDF page thumbnails will appear after the PDF engine is connected.</div>';return}for(let i=1;i<=totalPages;i++){const d=document.createElement("div");d.className="page-card"+(selectedPages.has(i)?" selected":"");d.dataset.page=i;d.innerHTML="<strong>Page "+i+"</strong><span>Click to select</span>";pageGrid.appendChild(d)}}
-fileInput.addEventListener("change",e=>load(e.target.files[0]));dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");load(e.dataTransfer.files[0])});
-pageGrid.addEventListener("click",e=>{const d=e.target.closest(".page-card");if(!d)return;const p=Number(d.dataset.page);selectedPages.has(p)?selectedPages.delete(p):selectedPages.add(p);d.classList.toggle("selected")});
-mode.addEventListener("change",()=>{const s=mode.value==="selected";pagesSetting.style.display=s||mode.value==="individual"?"block":"none";rangeSetting.style.display=mode.value==="range"?"block":"none"});
-document.getElementById("removeBtn").addEventListener("click",()=>{file=null;fileInput.value="";controls.classList.remove("show");document.getElementById("results").classList.remove("show");status.textContent="";selectedPages.clear();totalPages=0;splitBlobs=[]});
-document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
-document.getElementById("splitBtn").addEventListener("click",()=>{if(!file)return;let message="";if(mode.value==="individual")message="Each PDF page will become its own PDF file.";else if(mode.value==="selected"){if(!selectedPages.size){status.textContent="Select at least one page.";return}message="Selected pages: "+Array.from(selectedPages).sort((a,b)=>a-b).join(", ")+". These pages will be created as separate PDF files."}else{const r=document.getElementById("rangeInput").value.trim();if(!/^\d+\s*-\s*\d+$/.test(r)){status.textContent="Enter a page range such as 2-6.";return}message="Page range "+r+" is ready to be split."}document.getElementById("resultTitle").textContent="Split setup ready";document.getElementById("resultText").textContent=message;document.getElementById("results").classList.add("show");document.getElementById("downloadBtn").disabled=true;status.textContent="Interface ready. Connect a PDF processing library for the actual split and downloads."});
-document.getElementById("year").textContent=new Date().getFullYear();
-if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+const fileInput=document.getElementById("fileInput"),
+dropzone=document.getElementById("dropzone"),
+controls=document.getElementById("controls"),
+status=document.getElementById("status"),
+pageGrid=document.getElementById("pageGrid"),
+mode=document.getElementById("mode"),
+rangeSetting=document.getElementById("rangeSetting"),
+pagesSetting=document.getElementById("pagesSetting"),
+downloadBtn=document.getElementById("downloadBtn"),
+results=document.getElementById("results");
+
+let file=null;
+let totalPages=0;
+let selectedPages=new Set();
+let splitBlobs=[];
+
+function bytes(n){
+ if(n<1024)return n+" B";
+ if(n<1048576)return(n/1024).toFixed(1)+" KB";
+ return(n/1048576).toFixed(2)+" MB";
+}
+
+async function loadPDF(){
+ if(!file)return;
+
+ if(!window.PDFLib){
+  status.textContent="PDF engine could not be loaded. Please refresh and try again.";
+  return;
+ }
+
+ try{
+  status.textContent="Reading PDF…";
+
+  const {PDFDocument}=window.PDFLib;
+  const data=await file.arrayBuffer();
+  const pdf=await PDFDocument.load(data);
+
+  totalPages=pdf.getPageCount();
+  selectedPages.clear();
+  splitBlobs=[];
+
+  document.getElementById("fileName").textContent=file.name;
+  document.getElementById("fileInfo").textContent=
+   bytes(file.size)+" • "+totalPages+" page"+(totalPages===1?"":"s");
+
+  controls.classList.add("show");
+
+  renderPages();
+
+  status.textContent=
+   totalPages+" page"+(totalPages===1?"":"s")+" detected. Choose how you want to split the PDF.";
+
+ }catch(error){
+  console.error(error);
+  totalPages=0;
+  status.textContent="Could not read this PDF. Please choose a valid PDF file.";
+ }
+}
+
+function load(f){
+ if(!f)return;
+
+ if(f.type!=="application/pdf"&&!/\.pdf$/i.test(f.name)){
+  status.textContent="Please choose a PDF file.";
+  return;
+ }
+
+ file=f;
+ splitBlobs=[];
+ selectedPages.clear();
+ totalPages=0;
+
+ document.getElementById("fileName").textContent=f.name;
+ document.getElementById("fileInfo").textContent=bytes(f.size);
+
+ controls.classList.add("show");
+ results.classList.remove("show");
+ downloadBtn.disabled=true;
+
+ renderPages();
+ loadPDF();
+}
+
+function renderPages(){
+ pageGrid.innerHTML="";
+
+ if(!totalPages){
+  pageGrid.innerHTML=
+   '<div style="grid-column:1/-1;color:var(--muted);font-size:12px">Reading PDF pages…</div>';
+  return;
+ }
+
+ for(let i=1;i<=totalPages;i++){
+  const d=document.createElement("div");
+
+  d.className=
+   "page-card"+(selectedPages.has(i)?" selected":"");
+
+  d.dataset.page=i;
+
+  d.innerHTML=
+   "<strong>Page "+i+"</strong>"+
+   "<span>"+(selectedPages.has(i)?"Selected":"Click to select")+"</span>";
+
+  pageGrid.appendChild(d);
+ }
+}
+
+fileInput.addEventListener("change",e=>{
+ load(e.target.files[0]);
+ fileInput.value="";
+});
+
+dropzone.addEventListener("dragover",e=>{
+ e.preventDefault();
+ dropzone.classList.add("drag");
+});
+
+dropzone.addEventListener("dragleave",()=>{
+ dropzone.classList.remove("drag");
+});
+
+dropzone.addEventListener("drop",e=>{
+ e.preventDefault();
+ dropzone.classList.remove("drag");
+
+ const dropped=e.dataTransfer.files[0];
+
+ if(dropped)load(dropped);
+});
+
+pageGrid.addEventListener("click",e=>{
+ const d=e.target.closest(".page-card");
+
+ if(!d)return;
+
+ const p=Number(d.dataset.page);
+
+ if(selectedPages.has(p)){
+  selectedPages.delete(p);
+ }else{
+  selectedPages.add(p);
+ }
+
+ renderPages();
+});
+
+mode.addEventListener("change",()=>{
+ const selected=mode.value==="selected";
+ const individual=mode.value==="individual";
+ const range=mode.value==="range";
+
+ pagesSetting.style.display=
+  selected||individual?"block":"none";
+
+ rangeSetting.style.display=
+  range?"block":"none";
+
+ if(individual){
+  selectedPages.clear();
+  renderPages();
+ }
+});
+
+document.getElementById("removeBtn").addEventListener("click",()=>{
+ file=null;
+ totalPages=0;
+ selectedPages.clear();
+ splitBlobs=[];
+
+ fileInput.value="";
+
+ controls.classList.remove("show");
+ results.classList.remove("show");
+
+ pageGrid.innerHTML="";
+
+ downloadBtn.disabled=true;
+
+ status.textContent="";
+});
+
+document.getElementById("anotherBtn").addEventListener("click",()=>{
+ fileInput.click();
+});
+
+function getSelectedPages(){
+ const pages=[];
+
+ selectedPages.forEach(p=>{
+  if(p>=1&&p<=totalPages){
+   pages.push(p-1);
+  }
+ });
+
+ return pages.sort((a,b)=>a-b);
+}
+
+function getRangePages(value){
+ const match=value.match(/^\s*(\d+)\s*-\s*(\d+)\s*$/);
+
+ if(!match)return null;
+
+ let start=Number(match[1]);
+ let end=Number(match[2]);
+
+ if(start>end){
+  [start,end]=[end,start];
+ }
+
+ if(start<1||end>totalPages){
+  return null;
+ }
+
+ const pages=[];
+
+ for(let i=start;i<=end;i++){
+  pages.push(i-1);
+ }
+
+ return pages;
+}
+
+async function createSinglePDF(sourcePDF,pageIndex){
+ const {PDFDocument}=window.PDFLib;
+
+ const newPDF=await PDFDocument.create();
+
+ const copiedPages=
+  await newPDF.copyPages(sourcePDF,[pageIndex]);
+
+ newPDF.addPage(copiedPages[0]);
+
+ const bytes=await newPDF.save();
+
+ return new Blob(
+  [bytes],
+  {type:"application/pdf"}
+ );
+}
+
+async function createSplitPDFs(){
+ if(!file){
+  status.textContent="Please upload a PDF first.";
+  return;
+ }
+
+ if(!window.PDFLib){
+  status.textContent="PDF engine could not be loaded. Please refresh and try again.";
+  return;
+ }
+
+ try{
+  status.textContent="Preparing PDF…";
+
+  const {PDFDocument}=window.PDFLib;
+
+  const data=await file.arrayBuffer();
+
+  const sourcePDF=
+   await PDFDocument.load(data);
+
+  const pageGroups=[];
+
+  if(mode.value==="individual"){
+
+   for(let i=0;i<totalPages;i++){
+    pageGroups.push([i]);
+   }
+
+  }else if(mode.value==="selected"){
+
+   const pages=getSelectedPages();
+
+   if(!pages.length){
+    status.textContent="Select at least one page.";
+    return;
+   }
+
+   /*
+    Each selected page becomes
+    its own separate PDF.
+   */
+
+   for(const page of pages){
+    pageGroups.push([page]);
+   }
+
+  }else{
+
+   const range=
+    document.getElementById("rangeInput").value.trim();
+
+   const pages=getRangePages(range);
+
+   if(!pages){
+    status.textContent=
+     "Enter a valid page range such as 2-6.";
+    return;
+   }
+
+   pageGroups.push(pages);
+  }
+
+  splitBlobs=[];
+
+  for(let i=0;i<pageGroups.length;i++){
+
+   status.textContent=
+    "Creating PDF "+(i+1)+" of "+pageGroups.length+"…";
+
+   const newPDF=await PDFDocument.create();
+
+   const copiedPages=
+    await newPDF.copyPages(
+     sourcePDF,
+     pageGroups[i]
+    );
+
+   copiedPages.forEach(page=>{
+    newPDF.addPage(page);
+   });
+
+   const pdfBytes=
+    await newPDF.save();
+
+   splitBlobs.push(
+    new Blob(
+     [pdfBytes],
+     {type:"application/pdf"}
+    )
+   );
+  }
+
+  results.classList.add("show");
+
+  document.getElementById("resultTitle").textContent=
+   "PDF split successfully";
+
+  document.getElementById("resultText").textContent=
+   splitBlobs.length+
+   " PDF file"+
+   (splitBlobs.length===1?"":"s")+
+   " created successfully.";
+
+  downloadBtn.disabled=false;
+
+  status.textContent=
+   "Your split PDF file"+
+   (splitBlobs.length===1?" is":"s are")+
+   " ready to download.";
+
+ }catch(error){
+
+  console.error(error);
+
+  splitBlobs=[];
+  downloadBtn.disabled=true;
+
+  status.textContent=
+   "Could not split the PDF. Please try another PDF file.";
+ }
+}
+
+document.getElementById("splitBtn").addEventListener(
+ "click",
+ createSplitPDFs
+);
+
+downloadBtn.addEventListener("click",async()=>{
+
+ if(!splitBlobs.length)return;
+
+ /*
+  One result:
+  download directly.
+ */
+
+ if(splitBlobs.length===1){
+
+  const url=
+   URL.createObjectURL(splitBlobs[0]);
+
+  const a=document.createElement("a");
+
+  a.href=url;
+
+  a.download=
+   file.name.replace(/\.pdf$/i,"")+
+   "-split.pdf";
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(url);
+  },2000);
+
+  status.textContent=
+   "PDF downloaded successfully.";
+
+  return;
+ }
+
+ /*
+  Multiple results:
+  download each PDF separately.
+ */
+
+ for(let i=0;i<splitBlobs.length;i++){
+
+  const url=
+   URL.createObjectURL(splitBlobs[i]);
+
+  const a=document.createElement("a");
+
+  a.href=url;
+
+  a.download=
+   file.name.replace(/\.pdf$/i,"")+
+   "-page-"+(i+1)+".pdf";
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+  await new Promise(resolve=>
+   setTimeout(resolve,300)
+  );
+
+  URL.revokeObjectURL(url);
+ }
+
+ status.textContent=
+  splitBlobs.length+
+  " split PDFs downloaded successfully.";
+});
+
+document.getElementById("year").textContent=
+ new Date().getFullYear();
+
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>{
+  navigator.serviceWorker
+   .register("/sw.js")
+   .catch(()=>{});
+ });
+}
 </script>
 </body>
 </html>

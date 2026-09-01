@@ -12,6 +12,8 @@
 <link rel="canonical" href="https://pixelcanvasstudio.com/pdf-merger.html">
 <meta name="description" content="Merge multiple PDF files into one document online with PixelCanvas Studio. Upload PDFs, reorder files, remove unwanted files, preview the document list and download one merged PDF.">
 <title>PDF Merger | Merge PDF Files Online | PixelCanvas Studio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
 <style>
 :root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
@@ -88,18 +90,244 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;f
 <footer><div class="container"><div class="footerlinks"><a href="/">Home</a><a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a></div>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</div></footer>
 
 <script>
-const fileInput=document.getElementById("fileInput"),dropzone=document.getElementById("dropzone"),controls=document.getElementById("controls"),fileList=document.getElementById("fileList"),status=document.getElementById("status"),results=document.getElementById("results"),downloadBtn=document.getElementById("downloadBtn");
+const fileInput=document.getElementById("fileInput"),
+dropzone=document.getElementById("dropzone"),
+controls=document.getElementById("controls"),
+fileList=document.getElementById("fileList"),
+status=document.getElementById("status"),
+results=document.getElementById("results"),
+downloadBtn=document.getElementById("downloadBtn"),
+summaryText=document.getElementById("summaryText");
+
 let files=[],mergedBlob=null;
-function bytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";return(n/1048576).toFixed(2)+" MB"}
-function render(){fileList.innerHTML="";files.forEach((f,i)=>{const row=document.createElement("div");row.className="file-row";row.innerHTML='<div class="number">'+(i+1)+'</div><div class="file-meta"><div class="file-name">'+f.name+'</div><div class="file-info">'+bytes(f.size)+'</div></div><div class="order-buttons"><button class="small-btn" data-i="'+i+'" data-m="up">↑</button><button class="small-btn" data-i="'+i+'" data-m="down">↓</button></div><button class="remove-file" data-i="'+i+'" aria-label="Remove PDF">×</button>';fileList.appendChild(row)});controls.classList.toggle("show",files.length>0)}
-function add(list){const valid=Array.from(list).filter(f=>f.type==="application/pdf"||/\.pdf$/i.test(f.name));if(!valid.length){status.textContent="Please choose PDF files.";return}files=[...files,...valid];render();results.classList.remove("show");downloadBtn.disabled=true;status.textContent=files.length+" PDF"+(files.length===1?"":"s")+" ready."}
-fileInput.addEventListener("change",e=>{add(e.target.files);fileInput.value=""});dropzone.addEventListener("dragover",e=>{e.preventDefault();dropzone.classList.add("drag")});dropzone.addEventListener("dragleave",()=>dropzone.classList.remove("drag"));dropzone.addEventListener("drop",e=>{e.preventDefault();dropzone.classList.remove("drag");add(e.dataTransfer.files)});
-fileList.addEventListener("click",e=>{const i=Number(e.target.dataset.i);if(e.target.dataset.m==="up"&&i>0)[files[i-1],files[i]]=[files[i],files[i-1]];if(e.target.dataset.m==="down"&&i<files.length-1)[files[i+1],files[i]]=[files[i],files[i+1]];if(e.target.classList.contains("remove-file"))files.splice(i,1);render()});
-document.getElementById("addBtn").addEventListener("click",()=>fileInput.click());document.getElementById("clearBtn").addEventListener("click",()=>{files=[];mergedBlob=null;render();results.classList.remove("show");downloadBtn.disabled=true;status.textContent=""});
-document.getElementById("mergeBtn").addEventListener("click",()=>{if(files.length<2){status.textContent="Please add at least two PDF files to merge.";return}document.getElementById("summaryText").textContent=files.length+" PDF files are arranged and ready to be merged in the displayed order.";results.classList.add("show");downloadBtn.disabled=true;status.textContent="Interface ready. Connect a PDF merge library for the final merged PDF."});
-downloadBtn.addEventListener("click",()=>{if(!mergedBlob)return;const u=URL.createObjectURL(mergedBlob),a=document.createElement("a");a.href=u;a.download="merged.pdf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
-document.getElementById("year").textContent=new Date().getFullYear();
-if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+
+function bytes(n){
+ if(n<1024)return n+" B";
+ if(n<1048576)return(n/1024).toFixed(1)+" KB";
+ return(n/1048576).toFixed(2)+" MB";
+}
+
+function render(){
+ fileList.innerHTML="";
+
+ files.forEach((f,i)=>{
+  const row=document.createElement("div");
+  row.className="file-row";
+
+  row.innerHTML=
+   '<div class="number">'+(i+1)+'</div>'+
+   '<div class="file-meta">'+
+    '<div class="file-name">'+f.name+'</div>'+
+    '<div class="file-info">'+bytes(f.size)+'</div>'+
+   '</div>'+
+   '<div class="order-buttons">'+
+    '<button class="small-btn" data-i="'+i+'" data-m="up">↑</button>'+
+    '<button class="small-btn" data-i="'+i+'" data-m="down">↓</button>'+
+   '</div>'+
+   '<button class="remove-file" data-i="'+i+'" aria-label="Remove PDF">×</button>';
+
+  fileList.appendChild(row);
+ });
+
+ controls.classList.toggle("show",files.length>0);
+}
+
+function add(list){
+ const valid=Array.from(list).filter(
+  f=>f.type==="application/pdf"||/\.pdf$/i.test(f.name)
+ );
+
+ if(!valid.length){
+  status.textContent="Please choose PDF files.";
+  return;
+ }
+
+ files=[...files,...valid];
+
+ mergedBlob=null;
+ downloadBtn.disabled=true;
+
+ render();
+
+ results.classList.remove("show");
+
+ status.textContent=
+  files.length+" PDF"+(files.length===1?"":"s")+" ready.";
+}
+
+fileInput.addEventListener("change",e=>{
+ add(e.target.files);
+ fileInput.value="";
+});
+
+dropzone.addEventListener("dragover",e=>{
+ e.preventDefault();
+ dropzone.classList.add("drag");
+});
+
+dropzone.addEventListener("dragleave",()=>{
+ dropzone.classList.remove("drag");
+});
+
+dropzone.addEventListener("drop",e=>{
+ e.preventDefault();
+ dropzone.classList.remove("drag");
+ add(e.dataTransfer.files);
+});
+
+fileList.addEventListener("click",e=>{
+ const i=Number(e.target.dataset.i);
+
+ if(e.target.dataset.m==="up" && i>0){
+  [files[i-1],files[i]]=[files[i],files[i-1]];
+ }
+
+ if(e.target.dataset.m==="down" && i<files.length-1){
+  [files[i+1],files[i]]=[files[i],files[i+1]];
+ }
+
+ if(e.target.classList.contains("remove-file")){
+  files.splice(i,1);
+ }
+
+ mergedBlob=null;
+ downloadBtn.disabled=true;
+
+ results.classList.remove("show");
+
+ render();
+});
+
+document.getElementById("addBtn").addEventListener("click",()=>{
+ fileInput.click();
+});
+
+document.getElementById("clearBtn").addEventListener("click",()=>{
+ files=[];
+ mergedBlob=null;
+
+ render();
+
+ results.classList.remove("show");
+
+ downloadBtn.disabled=true;
+
+ summaryText.textContent="—";
+ status.textContent="";
+});
+
+async function mergePDFs(){
+
+ if(files.length<2){
+  status.textContent="Please add at least two PDF files to merge.";
+  return;
+ }
+
+ if(!window.PDFLib){
+  status.textContent=
+   "PDF merge engine could not be loaded. Please refresh and try again.";
+  return;
+ }
+
+ const {PDFDocument}=window.PDFLib;
+
+ status.textContent="Preparing merged PDF…";
+
+ mergedBlob=null;
+ downloadBtn.disabled=true;
+
+ try{
+
+  const mergedPdf=await PDFDocument.create();
+
+  for(let i=0;i<files.length;i++){
+
+   status.textContent=
+    "Merging PDF "+(i+1)+" of "+files.length+"…";
+
+   const sourceBytes=
+    new Uint8Array(await files[i].arrayBuffer());
+
+   const sourcePdf=
+    await PDFDocument.load(sourceBytes);
+
+   const pages=
+    await mergedPdf.copyPages(
+     sourcePdf,
+     sourcePdf.getPageIndices()
+    );
+
+   pages.forEach(page=>{
+    mergedPdf.addPage(page);
+   });
+  }
+
+  const mergedBytes=await mergedPdf.save();
+
+  mergedBlob=new Blob(
+   [mergedBytes],
+   {type:"application/pdf"}
+  );
+
+  summaryText.textContent=
+   files.length+
+   " PDF files merged successfully in the displayed order.";
+
+  results.classList.add("show");
+  downloadBtn.disabled=false;
+
+  status.textContent=
+   "Merge complete. Your PDF is ready to download.";
+
+ }catch(error){
+
+  console.error(error);
+
+  mergedBlob=null;
+  downloadBtn.disabled=true;
+
+  status.textContent=
+   "Could not merge the PDF files. Please check that the PDFs are valid and try again.";
+ }
+}
+
+document.getElementById("mergeBtn").addEventListener(
+ "click",
+ mergePDFs
+);
+
+downloadBtn.addEventListener("click",()=>{
+
+ if(!mergedBlob)return;
+
+ const url=URL.createObjectURL(mergedBlob);
+
+ const a=document.createElement("a");
+
+ a.href=url;
+ a.download="merged.pdf";
+
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+
+ setTimeout(()=>{
+  URL.revokeObjectURL(url);
+ },2000);
+
+ status.textContent="Merged PDF downloaded successfully.";
+});
+
+document.getElementById("year").textContent=
+ new Date().getFullYear();
+
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>{
+  navigator.serviceWorker
+   .register("/sw.js")
+   .catch(()=>{});
+ });
+}
 </script>
 </body>
 </html>
