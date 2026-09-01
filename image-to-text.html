@@ -36,6 +36,7 @@ textarea{width:100%;min-height:300px;resize:vertical;background:#080b12;color:#e
 footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0;color:#718096;font-size:11px}.footerlinks{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}.footerlinks a:hover{color:#fff}
 @media(max-width:650px){.navlinks a:nth-child(2){display:none}.toolbox{padding:14px}.upload-row,.panels{grid-template-columns:1fr}.image-preview{height:230px}.stats{grid-template-columns:1fr}.related{grid-template-columns:1fr}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
 <header><div class="container nav">
@@ -104,10 +105,30 @@ document.getElementById("removeBtn").addEventListener("click",()=>{file=null;fil
 document.getElementById("anotherBtn").addEventListener("click",()=>fileInput2.click());
 function updateCounts(){const t=textOutput.value.trim();document.getElementById("charCount").textContent=textOutput.value.length;document.getElementById("wordCount").textContent=t?t.split(/\s+/).length:0}
 textOutput.addEventListener("input",updateCounts);
-document.getElementById("ocrBtn").addEventListener("click",()=>{
+document.getElementById("ocrBtn").addEventListener("click",async()=>{
  if(!file)return;
- status.textContent="OCR engine is ready to be connected. Add the production OCR library/model to perform text recognition.";
- textOutput.value="";updateCounts();
+ const btn=document.getElementById("ocrBtn");
+ btn.disabled=true;
+ textOutput.value="";
+ updateCounts();
+ try{
+   if(typeof Tesseract === "undefined") throw new Error("OCR library could not be loaded.");
+   status.textContent="Starting OCR… 0%";
+   const result=await Tesseract.recognize(file,"eng",{
+     logger:m=>{
+       if(m.status === "recognizing text") status.textContent=`Recognizing text… ${Math.round((m.progress||0)*100)}%`;
+       else if(m.status) status.textContent=m.status.charAt(0).toUpperCase()+m.status.slice(1)+"…";
+     }
+   });
+   textOutput.value=(result.data.text||"").trim();
+   updateCounts();
+   status.textContent=textOutput.value ? "OCR complete. Review the text before using it." : "OCR finished, but no text was detected.";
+ }catch(err){
+   console.error(err);
+   status.textContent="OCR could not process this image. Please try a clearer image and try again.";
+ }finally{
+   btn.disabled=false;
+ }
 });
 document.getElementById("copyBtn").addEventListener("click",async()=>{
  if(!textOutput.value)return;try{await navigator.clipboard.writeText(textOutput.value);status.textContent="Text copied to clipboard."}catch{status.textContent="Copy is unavailable in this browser. Select the text and copy it manually."}
