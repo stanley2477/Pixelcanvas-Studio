@@ -14,6 +14,20 @@
 <title>PixelCanvas Studio | Free Image, PDF & Document Tools</title>
 
 <style>
+
+html,
+body {
+    overflow-x: hidden;
+}
+
+#toolSearch {
+    font-size: 16px !important;
+    transform: none !important;
+    zoom: 1 !important;
+    -webkit-text-size-adjust: 100%;
+    max-width: 100%;
+}
+
 :root{--bg:#080b12;--card:#111722;--card2:#151d2a;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff;--green:#34d399}
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
 html{scroll-behavior:smooth}
@@ -98,7 +112,7 @@ footer{margin-top:35px;border-top:1px solid rgba(255,255,255,.07);padding:30px 0
 <p>Compress, resize, convert, crop, scan, edit and prepare images and PDF documents with easy-to-use online tools.</p>
 <div class="search">
 <span class="search-icon">⌕</span>
-<input id="toolSearch" type="search" placeholder="Search image, PDF or document tools..." aria-label="Search tools">
+<input id="toolSearch" type="search" placeholder="Search image, PDF or document tools..." aria-label="Search tools" autocomplete="off" inputmode="search">
 </div>
 <div class="actions">
 <a class="btn primary" href="all-tools.html">Explore All Tools</a>
@@ -221,10 +235,10 @@ footer{margin-top:35px;border-top:1px solid rgba(255,255,255,.07);padding:30px 0
 <div class="footer-top">
 <div class="footer-brand">PixelCanvas Studio</div>
 <div class="footer-links">
-<a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="faq.html">FAQ</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a>
+<a href="all-tools.html">All Tools</a><a href="guides.html">Guides</a><a href="#faq">FAQ</a><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a>
 </div>
 </div>
-<div class="footer-bottom"><span>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</span><span>Image, PDF & Document Tools</span></div>
+<div class="footer-bottom"><span>© <span id="year"></span> PixelCanvas Studio. All rights reserved.</span></div>
 </div>
 </footer>
 
