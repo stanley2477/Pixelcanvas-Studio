@@ -130,7 +130,52 @@ async function convertOne(file,index,total){
  const title=document.createElement("strong");title.textContent=name;
  const info=document.createElement("small");info.textContent=bytes(blob.size);
  const dl=document.createElement("button");dl.className="btn primary";dl.type="button";dl.textContent="📥 Download "+ext.toUpperCase();dl.style.width="100%";dl.style.marginTop="10px";
- dl.addEventListener("click",()=>{const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;a.style.display="none";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)});
+ dl.addEventListener("click",async()=>{
+ const photoFile=new File(
+  [blob],
+  name,
+  {type:blob.type}
+ );
+
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[photoFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Converted Image",
+    text:"Converted HEIC image created with PixelCanvas Studio.",
+    files:[photoFile]
+   });
+
+   setStatus("Image ready to share or save.");
+  }catch(error){
+   if(error.name==="AbortError"){
+    setStatus("Share cancelled.");
+   }else{
+    setStatus("Could not open the share menu.");
+   }
+  }
+ }else{
+  const u=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+
+  a.href=u;
+  a.download=name;
+  a.style.display="none";
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(u);
+  },2000);
+
+  setStatus("Image downloaded successfully.");
+ }
+});
  card.append(img,title,info,dl);resultGrid.appendChild(card);
 }
 document.getElementById("convertBtn").addEventListener("click",async()=>{if(!files.length){setStatus("Please select at least one HEIC or HEIF image.");return}const button=document.getElementById("convertBtn");button.disabled=true;resultGrid.innerHTML="";converted.forEach(x=>x.url&&URL.revokeObjectURL(x.url));converted=[];results.classList.add("show");try{for(let i=0;i<files.length;i++)await convertOne(files[i],i,files.length);setStatus(converted.length+" image"+(converted.length===1?"":"s")+" converted successfully.")}catch(e){console.error(e);setStatus("HEIC conversion failed. Please try another HEIC/HEIF image or refresh and try again.")}finally{button.disabled=false}});

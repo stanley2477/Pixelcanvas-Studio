@@ -538,32 +538,75 @@ document.getElementById("extractBtn")
 
 downloadBtn.addEventListener(
  "click",
- ()=>{
+ async()=>{
 
   if(!extractedBlob)return;
 
-  const url=
-   URL.createObjectURL(extractedBlob);
-
-  const a=
-   document.createElement("a");
-
-  a.href=url;
-  a.download="extracted-pages.pdf";
-
-  document.body.appendChild(a);
-
-  a.click();
-
-  a.remove();
-
-  setTimeout(()=>{
-   URL.revokeObjectURL(url);
-  },2000);
-
-  setStatus(
-   "PDF downloaded successfully."
+  const pdfFile=new File(
+   [extractedBlob],
+   "extracted-pages.pdf",
+   {type:"application/pdf"}
   );
+
+  if(
+   navigator.share &&
+   navigator.canShare &&
+   navigator.canShare({files:[pdfFile]})
+  ){
+
+   try{
+
+    await navigator.share({
+     title:"Extracted PDF",
+     text:"Extracted PDF created with PixelCanvas Studio.",
+     files:[pdfFile]
+    });
+
+    setStatus(
+     "PDF ready to share or save."
+    );
+
+   }catch(error){
+
+    if(error.name==="AbortError"){
+
+     setStatus("Share cancelled.");
+
+    }else{
+
+     setStatus(
+      "Could not open the share menu."
+     );
+
+    }
+
+   }
+
+  }else{
+
+   const url=
+    URL.createObjectURL(extractedBlob);
+
+   const a=
+    document.createElement("a");
+
+   a.href=url;
+   a.download="extracted-pages.pdf";
+
+   document.body.appendChild(a);
+
+   a.click();
+
+   a.remove();
+
+   setTimeout(()=>{
+    URL.revokeObjectURL(url);
+   },2000);
+
+   setStatus(
+    "PDF downloaded successfully."
+   );
+  }
  }
 );
 

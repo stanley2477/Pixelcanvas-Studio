@@ -196,12 +196,55 @@ document.getElementById("removeBgBtn").addEventListener("click",async()=>{
  }
 });
 
-downloadBtn.addEventListener("click",()=>{
+downloadBtn.addEventListener("click",async()=>{
  if(!resultBlob)return;
+
  const base=sourceFile.name.replace(/\.[^/.]+$/,"");
- const url=URL.createObjectURL(resultBlob),a=document.createElement("a");
- a.href=url;a.download=base+"-background-removed.png";document.body.appendChild(a);a.click();a.remove();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
+ const fileName=base+"-background-removed.png";
+
+ const photoFile=new File(
+  [resultBlob],
+  fileName,
+  {type:"image/png"}
+ );
+
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[photoFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Background Removed Image",
+    text:"Background-removed image created with PixelCanvas Studio.",
+    files:[photoFile]
+   });
+
+   status.textContent="Image ready to share or save.";
+  }catch(error){
+   if(error.name==="AbortError"){
+    status.textContent="Share cancelled.";
+   }else{
+    status.textContent="Could not open the share menu.";
+   }
+  }
+ }else{
+  const url=URL.createObjectURL(resultBlob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download=fileName;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(url);
+  },2000);
+
+  status.textContent="Image downloaded successfully.";
+ }
 });
 document.getElementById("year").textContent=new Date().getFullYear();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));

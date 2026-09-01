@@ -117,7 +117,52 @@ document.querySelectorAll("[data-pages]").forEach(b=>b.addEventListener("click",
 quality.addEventListener("input",e=>{document.getElementById("qualityValue").textContent=e.target.value+"%";document.getElementById("q2").textContent=e.target.value+"%"});
 document.getElementById("removeBtn").addEventListener("click",()=>{file=null;pdfDoc=null;converted=[];fileInput.value="";pageInput.value="";rangeInput.value="";controls.classList.remove("show");results.classList.remove("show");resultGrid.innerHTML="";setStatus("")});
 document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
-document.getElementById("convertBtn").addEventListener("click",async()=>{if(!pdfDoc){setStatus("Please upload a PDF first.");return}const nums=selectedPages();if(!nums.length){setStatus("Please select at least one valid PDF page.");return}converted=[];resultGrid.innerHTML="";results.classList.add("show");const q=Number(quality.value)/100;try{for(let n=0;n<nums.length;n++){const pageNo=nums[n];setStatus(`Converting page ${n+1} of ${nums.length}…`);const canvas=await renderPage(pageNo,2);const blob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",q));if(!blob)throw new Error("JPG creation failed");const name=(file.name.replace(/\.pdf$/i,"")||"document")+`-page-${pageNo}.jpg`;converted.push({page:pageNo,blob,name});const card=document.createElement("div");card.className="result";const img=document.createElement("img");img.className="result-preview";img.src=URL.createObjectURL(blob);img.alt=`Converted page ${pageNo}`;img.style.width="100%";img.style.height="auto";img.style.display="block";const title=document.createElement("strong");title.textContent=`Page ${pageNo}`;const info=document.createElement("small");info.textContent=bytes(blob.size);const dl=document.createElement("button");dl.className="small-btn";dl.type="button";dl.textContent="📥 Download JPG";dl.addEventListener("click",()=>{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});card.append(img,title,info,dl);resultGrid.appendChild(card)}downloadAllBtn.disabled=false;setStatus(`${converted.length} JPG${converted.length===1?"":"s"} ready to download.`)}catch(e){setStatus("Conversion failed. Please try another PDF.")}});
+document.getElementById("convertBtn").addEventListener("click",async()=>{if(!pdfDoc){setStatus("Please upload a PDF first.");return}const nums=selectedPages();if(!nums.length){setStatus("Please select at least one valid PDF page.");return}converted=[];resultGrid.innerHTML="";results.classList.add("show");const q=Number(quality.value)/100;try{for(let n=0;n<nums.length;n++){const pageNo=nums[n];setStatus(`Converting page ${n+1} of ${nums.length}…`);const canvas=await renderPage(pageNo,2);const blob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",q));if(!blob)throw new Error("JPG creation failed");const name=(file.name.replace(/\.pdf$/i,"")||"document")+`-page-${pageNo}.jpg`;converted.push({page:pageNo,blob,name});const card=document.createElement("div");card.className="result";const img=document.createElement("img");img.className="result-preview";img.src=URL.createObjectURL(blob);img.alt=`Converted page ${pageNo}`;img.style.width="100%";img.style.height="auto";img.style.display="block";const title=document.createElement("strong");title.textContent=`Page ${pageNo}`;const info=document.createElement("small");info.textContent=bytes(blob.size);const dl=document.createElement("button");dl.className="small-btn";dl.type="button";dl.textContent="📥 Download JPG";dl.addEventListener("click",async()=>{
+ const imageFile=new File(
+  [blob],
+  name,
+  {type:"image/jpeg"}
+ );
+
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[imageFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Converted JPG",
+    text:"JPG image created with PixelCanvas Studio.",
+    files:[imageFile]
+   });
+
+   setStatus("Image ready to share or save.");
+  }catch(error){
+   if(error.name==="AbortError"){
+    setStatus("Share cancelled.");
+   }else{
+    setStatus("Could not open the share menu.");
+   }
+  }
+ }else{
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download=name;
+  a.style.display="none";
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(url);
+  },2000);
+
+  setStatus("Image downloaded successfully.");
+ }
+});card.append(img,title,info,dl);resultGrid.appendChild(card)}downloadAllBtn.disabled=false;setStatus(`${converted.length} JPG${converted.length===1?"":"s"} ready to download.`)}catch(e){setStatus("Conversion failed. Please try another PDF.")}});
 document.getElementById("year").textContent=new Date().getFullYear();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
 </script>

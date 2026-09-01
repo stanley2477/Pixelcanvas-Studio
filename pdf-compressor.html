@@ -503,9 +503,49 @@ document.getElementById("compressBtn")
 compressPDF
 );
 
-downloadBtn.addEventListener("click",()=>{
+downloadBtn.addEventListener("click",async()=>{
 
 if(!compressedBlob)return;
+
+const pdfFile=new File(
+[compressedBlob],
+file.name.replace(/\.pdf$/i,"")+"-compressed.pdf",
+{type:"application/pdf"}
+);
+
+if(
+navigator.share &&
+navigator.canShare &&
+navigator.canShare({files:[pdfFile]})
+){
+
+try{
+
+await navigator.share({
+title:"Compressed PDF",
+text:"Compressed PDF created with PixelCanvas Studio.",
+files:[pdfFile]
+});
+
+status.textContent=
+"PDF ready to share or save.";
+
+}catch(error){
+
+if(error.name==="AbortError"){
+
+status.textContent="Share cancelled.";
+
+}else{
+
+status.textContent=
+"Could not open the share menu.";
+
+}
+
+}
+
+}else{
 
 const url=
 URL.createObjectURL(compressedBlob);
@@ -532,6 +572,9 @@ URL.revokeObjectURL(url);
 
 status.textContent=
 "PDF downloaded successfully.";
+
+}
+
 });
 
 document.getElementById("year").textContent=

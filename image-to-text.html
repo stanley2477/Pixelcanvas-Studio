@@ -133,8 +133,59 @@ document.getElementById("ocrBtn").addEventListener("click",async()=>{
 document.getElementById("copyBtn").addEventListener("click",async()=>{
  if(!textOutput.value)return;try{await navigator.clipboard.writeText(textOutput.value);status.textContent="Text copied to clipboard."}catch{status.textContent="Copy is unavailable in this browser. Select the text and copy it manually."}
 });
-document.getElementById("downloadBtn").addEventListener("click",()=>{
- const blob=new Blob([textOutput.value],{type:"text/plain;charset=utf-8"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="extracted-text.txt";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);
+document.getElementById("downloadBtn").addEventListener("click",async()=>{
+ if(!textOutput.value.trim())return;
+
+ const blob=new Blob(
+  [textOutput.value],
+  {type:"text/plain;charset=utf-8"}
+ );
+
+ const fileName="extracted-text.txt";
+
+ const textFile=new File(
+  [blob],
+  fileName,
+  {type:"text/plain"}
+ );
+
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[textFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Extracted Text",
+    text:"Extracted text created with PixelCanvas Studio.",
+    files:[textFile]
+   });
+
+   status.textContent="Text file ready to share or save.";
+  }catch(error){
+   if(error.name==="AbortError"){
+    status.textContent="Share cancelled.";
+   }else{
+    status.textContent="Could not open the share menu.";
+   }
+  }
+ }else{
+  const u=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+
+  a.href=u;
+  a.download=fileName;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(u);
+  },2000);
+
+  status.textContent="Text file downloaded successfully.";
+ }
 });
 document.getElementById("clearBtn").addEventListener("click",()=>{textOutput.value="";updateCounts();status.textContent="Extracted text cleared."});
 document.getElementById("year").textContent=new Date().getFullYear();

@@ -405,19 +405,53 @@ async function createPdf(){
 
 document.getElementById("createBtn").addEventListener("click",createPdf);
 
-downloadBtn.addEventListener("click",()=>{
+downloadBtn.addEventListener("click",async()=>{
  if(!pdfBlob)return;
 
- const url=URL.createObjectURL(pdfBlob);
- const a=document.createElement("a");
- a.href=url;
- a.download="photos.pdf";
- a.style.display="none";
- document.body.appendChild(a);
- a.click();
- a.remove();
+ const pdfFile=new File(
+  [pdfBlob],
+  "photos.pdf",
+  {type:"application/pdf"}
+ );
 
- setTimeout(()=>URL.revokeObjectURL(url),2000);
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[pdfFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Photo to PDF",
+    text:"PDF created with PixelCanvas Studio.",
+    files:[pdfFile]
+   });
+
+   status.textContent="PDF ready to share or save.";
+  }catch(error){
+   if(error.name==="AbortError"){
+    status.textContent="Share cancelled.";
+   }else{
+    status.textContent="Could not open the share menu.";
+   }
+  }
+ }else{
+  const url=URL.createObjectURL(pdfBlob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download="photos.pdf";
+  a.style.display="none";
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(url);
+  },2000);
+
+  status.textContent="PDF downloaded successfully.";
+ }
 });
 
 document.getElementById("year").textContent=new Date().getFullYear();

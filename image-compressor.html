@@ -300,15 +300,56 @@ compressBtn.addEventListener("click",()=>{
  img.src=originalUrl;
 });
 
-downloadBtn.addEventListener("click",()=>{
+downloadBtn.addEventListener("click",async()=>{
  if(!compressedBlob)return;
+
  const ext=sourceFile.type==="image/png"?"png":sourceFile.type==="image/webp"?"webp":"jpg";
  const base=sourceFile.name.replace(/\.[^/.]+$/,"");
- const a=document.createElement("a");
- a.href=URL.createObjectURL(compressedBlob);
- a.download=base+"-compressed."+ext;
- document.body.appendChild(a);a.click();a.remove();
- setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ const fileName=base+"-compressed."+ext;
+
+ const photoFile=new File(
+  [compressedBlob],
+  fileName,
+  {type:compressedBlob.type}
+ );
+
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[photoFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Compressed Image",
+    text:"Compressed image created with PixelCanvas Studio.",
+    files:[photoFile]
+   });
+
+   status.textContent="Image ready to share or save.";
+  }catch(error){
+   if(error.name==="AbortError"){
+    status.textContent="Share cancelled.";
+   }else{
+    status.textContent="Could not open the share menu.";
+   }
+  }
+ }else{
+  const url=URL.createObjectURL(compressedBlob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download=fileName;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(url);
+  },2000);
+
+  status.textContent="Image downloaded successfully.";
+ }
 });
 
 document.getElementById("year").textContent=new Date().getFullYear();

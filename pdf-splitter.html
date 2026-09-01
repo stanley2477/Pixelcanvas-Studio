@@ -13,6 +13,7 @@
 <meta name="description" content="Split PDF files online with PixelCanvas Studio. Upload a PDF, preview pages, select page ranges or individual pages, remove unwanted pages, create separate PDFs and download them.">
 <title>PDF Splitter | Split PDF Pages Online | PixelCanvas Studio</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <style>
 :root{--bg:#080b12;--card:#111722;--border:#222c3b;--text:#f5f7fb;--muted:#9aa6b8;--blue:#3b82f6;--blue2:#8ab8ff}
@@ -470,75 +471,190 @@ downloadBtn.addEventListener("click",async()=>{
  if(!splitBlobs.length)return;
 
  /*
-  One result:
-  download directly.
+  ONE PDF:
+  Open the native phone Share/Save sheet.
  */
-
  if(splitBlobs.length===1){
 
-  const url=
-   URL.createObjectURL(splitBlobs[0]);
+  const pdfFile=new File(
+   [splitBlobs[0]],
+   file.name.replace(/\.pdf$/i,"")+"-split.pdf",
+   {type:"application/pdf"}
+  );
 
-  const a=document.createElement("a");
+  if(
+   navigator.share &&
+   navigator.canShare &&
+   navigator.canShare({files:[pdfFile]})
+  ){
 
-  a.href=url;
+   try{
 
-  a.download=
-   file.name.replace(/\.pdf$/i,"")+
-   "-split.pdf";
+    await navigator.share({
+     title:"Split PDF",
+     text:"Split PDF created with PixelCanvas Studio.",
+     files:[pdfFile]
+    });
 
-  document.body.appendChild(a);
+    status.textContent=
+     "PDF ready to share or save.";
 
-  a.click();
+   }catch(error){
 
-  a.remove();
+    if(error.name==="AbortError"){
+     status.textContent="Share cancelled.";
+    }else{
+     status.textContent=
+      "Could not open the share menu.";
+    }
+   }
 
-  setTimeout(()=>{
-   URL.revokeObjectURL(url);
-  },2000);
+  }else{
 
-  status.textContent=
-   "PDF downloaded successfully.";
+   const url=
+    URL.createObjectURL(splitBlobs[0]);
+
+   const a=document.createElement("a");
+
+   a.href=url;
+   a.download=
+    file.name.replace(/\.pdf$/i,"")+"-split.pdf";
+
+   document.body.appendChild(a);
+   a.click();
+   a.remove();
+
+   setTimeout(()=>{
+    URL.revokeObjectURL(url);
+   },2000);
+
+   status.textContent=
+    "PDF downloaded successfully.";
+  }
 
   return;
  }
 
+
  /*
-  Multiple results:
-  download each PDF separately.
+  MULTIPLE PDFs:
+  Put all split PDFs into one ZIP file,
+  then open the native Share/Save sheet once.
  */
 
- for(let i=0;i<splitBlobs.length;i++){
+ if(!window.JSZip){
 
-  const url=
-   URL.createObjectURL(splitBlobs[i]);
+  status.textContent=
+   "ZIP engine could not be loaded. Please refresh and try again.";
 
-  const a=document.createElement("a");
-
-  a.href=url;
-
-  a.download=
-   file.name.replace(/\.pdf$/i,"")+
-   "-page-"+(i+1)+".pdf";
-
-  document.body.appendChild(a);
-
-  a.click();
-
-  a.remove();
-
-  await new Promise(resolve=>
-   setTimeout(resolve,300)
-  );
-
-  URL.revokeObjectURL(url);
+  return;
  }
 
- status.textContent=
-  splitBlobs.length+
-  " split PDFs downloaded successfully.";
-});
+ try{
 
+  status.textContent=
+   "Preparing split PDF files…";
+
+  const zip=new JSZip();
+
+  const baseName=
+   file.name.replace(/\.pdf$/i,"");
+
+  splitBlobs.forEach((blob,i)=>{
+
+   zip.file(
+    baseName+"-page-"+(i+1)+".pdf",
+    blob
+   );
+
+  });
+
+  status.textContent=
+   "Creating ZIP file…";
+
+  const zipBlob=
+   await zip.generateAsync({
+    type:"blob",
+    compression:"DEFLATE",
+    compressionOptions:{
+     level:6
+    }
+   });
+
+  const zipFile=new File(
+   [zipBlob],
+   baseName+"-split-pdfs.zip",
+   {type:"application/zip"}
+  );
+
+
+  /*
+   Native phone Share/Save sheet.
+  */
+
+  if(
+   navigator.share &&
+   navigator.canShare &&
+   navigator.canShare({files:[zipFile]})
+  ){
+
+   try{
+
+    await navigator.share({
+     title:"Split PDFs",
+     text:"Split PDF files created with PixelCanvas Studio.",
+     files:[zipFile]
+    });
+
+    status.textContent=
+     "Split PDFs ready to share or save.";
+
+   }catch(error){
+
+    if(error.name==="AbortError"){
+     status.textContent="Share cancelled.";
+    }else{
+     status.textContent=
+      "Could not open the share menu.";
+    }
+   }
+
+  }else{
+
+   /*
+    Fallback for browsers without
+    native file sharing.
+   */
+
+   const url=
+    URL.createObjectURL(zipBlob);
+
+   const a=document.createElement("a");
+
+   a.href=url;
+   a.download=
+    baseName+"-split-pdfs.zip";
+
+   document.body.appendChild(a);
+   a.click();
+   a.remove();
+
+   setTimeout(()=>{
+    URL.revokeObjectURL(url);
+   },2000);
+
+   status.textContent=
+    "Split PDFs downloaded successfully.";
+  }
+
+ }catch(error){
+
+  console.error(error);
+
+  status.textContent=
+   "Could not prepare the split PDF files.";
+ }
+});
 document.getElementById("year").textContent=
  new Date().getFullYear();
 

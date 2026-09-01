@@ -230,13 +230,56 @@ document.getElementById("convertBtn").addEventListener("click",()=>{
  },format.value,Number(quality.value)/100);
 });
 
-downloadBtn.addEventListener("click",()=>{
+downloadBtn.addEventListener("click",async()=>{
  if(!resultBlob)return;
+
  const ext=format.value==="image/png"?"png":format.value==="image/webp"?"webp":"jpg";
  const base=sourceFile.name.replace(/\.[^/.]+$/,"");
- const url=URL.createObjectURL(resultBlob),a=document.createElement("a");
- a.href=url;a.download=base+"-converted."+ext;document.body.appendChild(a);a.click();a.remove();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
+ const fileName=base+"-converted."+ext;
+
+ const photoFile=new File(
+  [resultBlob],
+  fileName,
+  {type:resultBlob.type}
+ );
+
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[photoFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Converted Image",
+    text:"Converted image created with PixelCanvas Studio.",
+    files:[photoFile]
+   });
+
+   status.textContent="Image ready to share or save.";
+  }catch(error){
+   if(error.name==="AbortError"){
+    status.textContent="Share cancelled.";
+   }else{
+    status.textContent="Could not open the share menu.";
+   }
+  }
+ }else{
+  const url=URL.createObjectURL(resultBlob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download=fileName;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(url);
+  },2000);
+
+  status.textContent="Image downloaded successfully.";
+ }
 });
 document.getElementById("year").textContent=new Date().getFullYear();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));

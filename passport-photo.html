@@ -236,9 +236,54 @@ document.getElementById("sheetBtn").addEventListener("click",()=>{
  for(let i=0;i<8;i++){const im=document.createElement("img");im.src=resultUrl;im.alt="Passport photo copy";sheet.appendChild(im)}
  status.textContent="Print sheet created with 8 copies.";
 });
-downloadBtn.addEventListener("click",()=>{
+downloadBtn.addEventListener("click",async()=>{
  if(!resultBlob)return;
- const url2=URL.createObjectURL(resultBlob),a=document.createElement("a");a.href=url2;a.download="passport-photo.jpg";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url2),1000);
+
+ const fileName="passport-photo.jpg";
+
+ const photoFile=new File(
+  [resultBlob],
+  fileName,
+  {type:"image/jpeg"}
+ );
+
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[photoFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Passport Photo",
+    text:"Passport photo created with PixelCanvas Studio.",
+    files:[photoFile]
+   });
+
+   status.textContent="Image ready to share or save.";
+  }catch(error){
+   if(error.name==="AbortError"){
+    status.textContent="Share cancelled.";
+   }else{
+    status.textContent="Could not open the share menu.";
+   }
+  }
+ }else{
+  const url2=URL.createObjectURL(resultBlob);
+  const a=document.createElement("a");
+
+  a.href=url2;
+  a.download=fileName;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(url2);
+  },2000);
+
+  status.textContent="Image downloaded successfully.";
+ }
 });
 document.getElementById("year").textContent=new Date().getFullYear();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));

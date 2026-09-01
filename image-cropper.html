@@ -128,7 +128,55 @@ document.getElementById("cropBtn").addEventListener("click",()=>{
  canvas.width=swap?sh:sw;canvas.height=swap?sw:sh;ctx.save();ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(rad);ctx.drawImage(img,sx,sy,sw,sh,-sw/2,-sh/2,sw,sh);ctx.restore();
  canvas.toBlob(blob=>{if(!blob){status.textContent="Could not create the cropped image.";return}resultBlob=blob;document.getElementById("cropDimensions").textContent=canvas.width+" × "+canvas.height;document.getElementById("rotationInfo").textContent=deg+"°";document.getElementById("outputSize").textContent=bytes(blob.size);editor.classList.add("show");downloadBtn.disabled=false;status.textContent="Crop complete."},"image/png");
 });
-downloadBtn.addEventListener("click",()=>{if(!resultBlob)return;const u=URL.createObjectURL(resultBlob),a=document.createElement("a");a.href=u;a.download="cropped-image.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+downloadBtn.addEventListener("click",async()=>{
+ if(!resultBlob)return;
+
+ const fileName="cropped-image.png";
+
+ const photoFile=new File(
+  [resultBlob],
+  fileName,
+  {type:"image/png"}
+ );
+
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[photoFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Cropped Image",
+    text:"Cropped image created with PixelCanvas Studio.",
+    files:[photoFile]
+   });
+
+   status.textContent="Image ready to share or save.";
+  }catch(error){
+   if(error.name==="AbortError"){
+    status.textContent="Share cancelled.";
+   }else{
+    status.textContent="Could not open the share menu.";
+   }
+  }
+ }else{
+  const u=URL.createObjectURL(resultBlob);
+  const a=document.createElement("a");
+
+  a.href=u;
+  a.download=fileName;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(u);
+  },2000);
+
+  status.textContent="Image downloaded successfully.";
+ }
+});
 document.getElementById("year").textContent=new Date().getFullYear();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
 </script>

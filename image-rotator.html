@@ -109,7 +109,55 @@ document.querySelectorAll(".action").forEach(b=>b.addEventListener("click",()=>{
 document.getElementById("removeBtn").addEventListener("click",()=>{file=null;fileInput.value="";controls.classList.remove("show");results.classList.remove("show");status.textContent="";if(url)URL.revokeObjectURL(url);url=null;resultBlob=null});
 document.getElementById("anotherBtn").addEventListener("click",()=>fileInput.click());
 document.getElementById("applyBtn").addEventListener("click",()=>{if(!file)return;status.textContent="Applying transform…";const img=new Image();img.onload=()=>{const swap=rotation===90||rotation===270,w=swap?img.naturalHeight:img.naturalWidth,h=swap?img.naturalWidth:img.naturalHeight,c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.translate(w/2,h/2);x.rotate(rotation*Math.PI/180);x.scale(flipH?-1:1,flipV?-1:1);x.drawImage(img,-img.naturalWidth/2,-img.naturalHeight/2);c.toBlob(blob=>{if(!blob){status.textContent="Could not create the transformed image.";return}resultBlob=blob;const u=URL.createObjectURL(blob);resultPreview.src=u;document.getElementById("dimensions").textContent=w+" × "+h;document.getElementById("transform").textContent=rotation+"°"+(flipH?" + H flip":"")+(flipV?" + V flip":"");document.getElementById("size").textContent=bytes(blob.size);results.classList.add("show");downloadBtn.disabled=false;status.textContent="Transform complete."},"image/png")};img.src=url});
-downloadBtn.addEventListener("click",()=>{if(!resultBlob)return;const u=URL.createObjectURL(resultBlob),a=document.createElement("a");a.href=u;a.download="rotated-image.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+downloadBtn.addEventListener("click",async()=>{
+ if(!resultBlob)return;
+
+ const fileName="rotated-image.png";
+
+ const photoFile=new File(
+  [resultBlob],
+  fileName,
+  {type:"image/png"}
+ );
+
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[photoFile]})
+ ){
+  try{
+   await navigator.share({
+    title:"Rotated Image",
+    text:"Rotated image created with PixelCanvas Studio.",
+    files:[photoFile]
+   });
+
+   status.textContent="Image ready to share or save.";
+  }catch(error){
+   if(error.name==="AbortError"){
+    status.textContent="Share cancelled.";
+   }else{
+    status.textContent="Could not open the share menu.";
+   }
+  }
+ }else{
+  const u=URL.createObjectURL(resultBlob);
+  const a=document.createElement("a");
+
+  a.href=u;
+  a.download=fileName;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(u);
+  },2000);
+
+  status.textContent="Image downloaded successfully.";
+ }
+});
 document.getElementById("year").textContent=new Date().getFullYear();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
 </script>
