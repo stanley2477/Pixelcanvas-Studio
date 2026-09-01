@@ -126,9 +126,52 @@ document.getElementById("clearBtn").addEventListener("click",()=>{files=[];conve
 async function convertOne(file,index,total){
  setStatus("Converting "+(index+1)+" of "+total+"…");
  const toType=format.value;
- const result=await heic2any({blob:file,toType,quality:Number(quality.value)/100,multiple:false});
- const blob=Array.isArray(result)?result[0]:result;
- if(!blob)throw new Error("No converted image returned");
+let blob;
+
+const isHeic =
+ file.name.toLowerCase().endsWith(".heic") ||
+ file.name.toLowerCase().endsWith(".heif") ||
+ (file.type||"").toLowerCase()==="image/heic" ||
+ (file.type||"").toLowerCase()==="image/heif";
+
+if(isHeic){
+ const result=await heic2any({
+  blob:file,
+  toType,
+  quality:Number(quality.value)/100,
+  multiple:false
+ });
+
+ blob=Array.isArray(result)?result[0]:result;
+}else{
+ const img=new Image();
+ const url=URL.createObjectURL(file);
+
+ await new Promise((resolve,reject)=>{
+  img.onload=resolve;
+  img.onerror=reject;
+  img.src=url;
+ });
+
+ const canvas=document.createElement("canvas");
+ canvas.width=img.naturalWidth;
+ canvas.height=img.naturalHeight;
+
+ const ctx=canvas.getContext("2d");
+ ctx.drawImage(img,0,0);
+
+ URL.revokeObjectURL(url);
+
+ blob=await new Promise(resolve=>{
+  canvas.toBlob(
+   resolve,
+   toType,
+   Number(quality.value)/100
+  );
+ });
+}
+
+if(!blob)throw new Error("No converted image returned");
  const ext=toType==="image/png"?"png":"jpg";
  const base=file.name.replace(/\.(heic|heif)$/i,"")||"image";
  const name=base+"."+ext;
