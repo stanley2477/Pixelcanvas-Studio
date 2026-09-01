@@ -296,26 +296,69 @@ document.getElementById("mergeBtn").addEventListener(
  mergePDFs
 );
 
-downloadBtn.addEventListener("click",()=>{
+downloadBtn.addEventListener("click",async()=>{
 
  if(!mergedBlob)return;
 
- const url=URL.createObjectURL(mergedBlob);
+ const pdfFile=new File(
+  [mergedBlob],
+  "merged.pdf",
+  {type:"application/pdf"}
+ );
 
- const a=document.createElement("a");
+ /*
+  Open the native phone share/save sheet
+  when the browser supports sharing files.
+ */
+ if(
+  navigator.share &&
+  navigator.canShare &&
+  navigator.canShare({files:[pdfFile]})
+ ){
 
- a.href=url;
- a.download="merged.pdf";
+  try{
 
- document.body.appendChild(a);
- a.click();
- a.remove();
+   await navigator.share({
+    title:"Merged PDF",
+    text:"Merged PDF created with PixelCanvas Studio.",
+    files:[pdfFile]
+   });
 
- setTimeout(()=>{
-  URL.revokeObjectURL(url);
- },2000);
+   status.textContent="PDF ready to share or save.";
 
- status.textContent="Merged PDF downloaded successfully.";
+  }catch(error){
+
+   if(error.name==="AbortError"){
+    status.textContent="Share cancelled.";
+   }else{
+    status.textContent="Could not open the share menu.";
+   }
+
+  }
+
+ }else{
+
+  /*
+   Fallback for browsers that do not support
+   file sharing.
+  */
+
+  const url=URL.createObjectURL(mergedBlob);
+
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="merged.pdf";
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+   URL.revokeObjectURL(url);
+  },2000);
+
+  status.textContent="Merged PDF downloaded successfully.";
+ }
 });
 
 document.getElementById("year").textContent=
